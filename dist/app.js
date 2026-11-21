@@ -6,7 +6,7 @@ const icons = {
  share: svg('<rect x="5" y="7" width="10" height="10" rx="2"/><path d="M8 4h8a1 1 0 0 1 1 1v8"/>'),
  node: svg('<circle cx="10" cy="10" r="3"/><circle cx="10" cy="10" r="7"/>')
 };
-const state = {routes:[],geo:null,selected:null,filter:'全部',query:'',landmarkLayer:null,node:null,mapReady:false,tour:null};
+const state = {routes:[],geo:null,selected:null,detailOpen:false,filter:'全部',query:'',landmarkLayer:null,node:null,mapReady:false,tour:null};
 let map, badgeMarkers=[], nodeMarkers=[], placeMarkers=[], hoverPopup, toastTimer, mapErrorShown=false;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -33,26 +33,34 @@ function setSidebar(open) {
 function renderDetail() {
  const r=state.routes.find(r=>r.id===state.selected);
  const el=$('#detail');
- if(!r){
-  el.classList.add('overview-detail');el.innerHTML=`<div class="eyebrow">EXPLORE HONG KONG</div><h2>沿著幹線，<br>看見城市的連繫。</h2><p>跨海的橋、穿山的隧道，<br>每一條路線，都是認識香港的新視角。</p><div class="overview-stat"><strong>10</strong><span>條主要幹線</span></div><div class="detail-divider"></div><p>點選地圖上的路線或左側列表，<br>開始你的沿線探索。</p><button class="tour-button" id="featured-route">探索 8 號幹線</button>`;
-  $('#featured-route').addEventListener('click',()=>selectRoute(8));return;
- }
- el.classList.remove('overview-detail');el.style.setProperty('--selected',r.color);
- el.innerHTML=`<div class="detail-topline"><div class="detail-route-label"><span class="shield" aria-hidden="true">${r.id}</span><span>${r.id} 號幹線</span></div><span class="detail-direction">${r.orientation==='環迴'?'新界環迴':r.orientation+'走向'}</span></div><h2>${esc(r.tagline)}</h2><div class="detail-endpoints">${esc(r.endpoints)}</div><p class="detail-description">${esc(r.description)}</p><div class="detail-meta">${icons.node}<span>${r.nodes.length} 個精選沿線節點</span><a href="${r.source}" target="_blank" rel="noopener">官方路線圖</a></div>${r.hasConstruction?'<p class="construction-note">含建造中路段，地圖以虛線顯示。請以官方最新通車安排為準。</p>':''}<div class="detail-divider"></div><div class="node-header">沿線節點<span>點選定位</span></div><ol class="node-list">${r.nodes.map((n,i)=>`<li class="${i===state.node?'current':''}"><button data-node="${i}" aria-label="定位${esc(n.name)}"><span>${esc(n.name)}</span><small>${n.kind}</small></button></li>`).join('')}</ol><div class="detail-actions"><button class="tour-button" id="start-tour">${icons.play}沿線探索</button><button class="share-button" id="share-route" aria-label="複製此幹線連結" title="複製此幹線連結">${icons.share}</button></div>`;
+ el.hidden=!r||!state.detailOpen;
+ if(el.hidden){el.replaceChildren();return;}
+ el.style.setProperty('--selected',r.color);
+ el.innerHTML=`<div class="detail-topline"><div class="detail-route-label"><span class="shield" aria-hidden="true">${r.id}</span><span>${r.id} 號幹線</span></div><span class="detail-direction">${r.orientation==='環迴'?'新界環迴':r.orientation+'走向'}</span><button id="detail-close" class="detail-close" aria-label="關閉幹線詳情" title="關閉幹線詳情">×</button></div><h2>${esc(r.tagline)}</h2><div class="detail-endpoints">${esc(r.endpoints)}</div><p class="detail-description">${esc(r.description)}</p><div class="detail-meta">${icons.node}<span>${r.nodes.length} 個精選沿線節點</span><a href="${r.source}" target="_blank" rel="noopener">官方路線圖</a></div>${r.hasConstruction?'<p class="construction-note">含建造中路段，地圖以虛線顯示。請以官方最新通車安排為準。</p>':''}<div class="detail-divider"></div><div class="node-header">沿線節點<span>點選定位</span></div><ol class="node-list">${r.nodes.map((n,i)=>`<li class="${i===state.node?'current':''}"><button data-node="${i}" aria-label="定位${esc(n.name)}"><span>${esc(n.name)}</span><small>${n.kind}</small></button></li>`).join('')}</ol><div class="detail-actions"><button class="tour-button" id="start-tour">${icons.play}沿線探索</button><button class="share-button" id="share-route" aria-label="複製此幹線連結" title="複製此幹線連結">${icons.share}</button></div>`;
  el.querySelectorAll('[data-node]').forEach(b=>b.addEventListener('click',()=>focusNode(Number(b.dataset.node))));
+ $('#detail-close').addEventListener('click',closeDetail);
  $('#start-tour').addEventListener('click',startTour);$('#share-route').addEventListener('click',shareRoute);
+}
+function closeDetail() {
+ stopTour(false);state.detailOpen=false;renderDetail();
+ map?.getCanvas().focus({preventScroll:true});
 }
 function fitRoute(id,animate=true) {
  if(!map||!state.mapReady)return;
  const coords=state.geo.features.filter(f=>!id||f.properties.route===id).flatMap(f=>f.geometry.coordinates);
  const bounds=new maplibregl.LngLatBounds();coords.forEach(c=>bounds.extend(c));
  const mobile=innerWidth<=760;
- const right=mobile?35:Math.min(395,map.getContainer().clientWidth*.4);
- const bottom=mobile?$('#detail').getBoundingClientRect().height+80:90;
- map.fitBounds(bounds,{padding:{top:mobile?100:110,right,bottom,left:mobile?35:65},maxZoom:12.7,duration:animate&&!reducedMotion?900:0,bearing:0,pitch:0,retainPadding:false});
+ const {width,height}=map.getContainer().getBoundingClientRect();
+ const detail=$('#detail');const card=detail.hidden?null:detail.getBoundingClientRect();
+ const right=!mobile&&card?Math.min(card.width+55,width*.45):Math.min(55,width*.1);
+ const bottom=mobile&&card?Math.min(card.height+65,height*.55):55;
+ const padding={top:Math.min(mobile?90:100,height*.2),right,bottom,left:mobile?25:50};
+ // Fit around visible controls without leaving padding in the map's drag camera.
+ const camera=map.cameraForBounds(bounds,{padding,maxZoom:12.7,bearing:0});
+ if(camera)map.easeTo({...camera,padding:0,duration:animate&&!reducedMotion?900:0,bearing:0,pitch:0});
 }
 function selectRoute(id,{fit=true,hash=true}={}) {
- stopTour(false);hoverPopup?.remove();state.selected=id;state.node=null;
+ stopTour(false);hoverPopup?.remove();state.selected=id;state.detailOpen=Boolean(id);state.node=null;
  if(hash)history.replaceState(null,'',id?`#route=${id}`:location.pathname+location.search);
  listRoutes();renderDetail();updateMap();
  if(fit)fitRoute(id);setSidebar(false);
@@ -83,7 +91,7 @@ function renderNodes() {
 }
 function focusNode(index,{tour=false}={}) {
  const r=state.routes.find(r=>r.id===state.selected);if(!r?.nodes[index])return;
- if(!tour)stopTour(false);state.node=index;renderDetail();renderNodes();
+ if(!tour){stopTour(false);state.detailOpen=true;}state.node=index;renderDetail();renderNodes();
  if(state.mapReady){
   const offset=innerWidth<=760?[0,-Math.min(innerHeight*.13,100)]:[-105,0];
   map.flyTo({center:r.nodes[index].coordinates,zoom:tour?13:13.4,padding:0,pitch:0,bearing:0,offset,duration:reducedMotion?0:1600,essential:false});
@@ -151,7 +159,8 @@ function addPlaceLabels() {
 async function initMap() {
  if(!window.maplibregl){message('地圖引擎載入失敗，請重新整理。你仍可使用左側列表閱讀路線。',true);return;}
  try{
-  map=new maplibregl.Map({container:'map',style:'./data/basemap.json',center:[114.09,22.38],zoom:10.25,minZoom:8,maxZoom:17,maxBounds:[[113.65,22.05],[114.65,22.75]],attributionControl:false,renderWorldCopies:false,locale:{'Map.Title':'香港幹線探索地圖','AttributionControl.ToggleAttribution':'顯示地圖來源'}});
+  map=new maplibregl.Map({container:'map',style:'./data/basemap.json',center:[114.09,22.38],zoom:10.25,minZoom:6,maxZoom:17,attributionControl:false,renderWorldCopies:false,locale:{'Map.Title':'香港幹線探索地圖','AttributionControl.ToggleAttribution':'顯示地圖來源'}});
+  new ResizeObserver(()=>map.resize()).observe($('#map'));
   map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-right');map.addControl(new maplibregl.ScaleControl({maxWidth:90,unit:'metric'}),'bottom-left');
   map.on('load',()=>{state.mapReady=true;addMapLayers();updateMap();fitRoute(state.selected,false);$('#map-message').hidden=true;});
   map.on('error',e=>{
@@ -183,9 +192,10 @@ function bindUI() {
  dialog.addEventListener('click',e=>{const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
  setSidebar(false);$('#mobile-routes').addEventListener('click',()=>setSidebar(!$('.sidebar').classList.contains('open')));
  $('#mobile-close').addEventListener('click',()=>{setSidebar(false);$('#mobile-routes').focus();});
- document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)&&!dialog.open){e.preventDefault();if(innerWidth<=760)setSidebar(true);$('#search').focus();}if(e.key==='Escape'){stopTour();setSidebar(false);}});
+ document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)&&!dialog.open){e.preventDefault();if(innerWidth<=760)setSidebar(true);$('#search').focus();}if(e.key==='Escape'){stopTour(false);setSidebar(false);if(!dialog.open)closeDetail();}});
  window.addEventListener('hashchange',()=>{const id=Number(new URLSearchParams(location.hash.slice(1)).get('route'));selectRoute(state.routes.some(r=>r.id===id)?id:null,{hash:false});});
- let resizeTimer;window.addEventListener('resize',()=>{setSidebar($('.sidebar').classList.contains('open'));if(map)map.resize();clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(map&&!state.tour)fitRoute(state.selected,false);},120);});
+ // Resizing the window must preserve the location the visitor has dragged to.
+ window.addEventListener('resize',()=>{setSidebar($('.sidebar').classList.contains('open'));if(map)map.resize();});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopTour(false);});
 }
 async function main() {

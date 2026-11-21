@@ -18,6 +18,7 @@ Open http://127.0.0.1:4173. The basemap and optional web font require network ac
 - 66 editorial landmarks with map focus and a sequential guided exploration.
 - Bridge and tunnel landmark layers, route share links, GeoJSON download, responsive mobile layout, keyboard controls, and reduced-motion support.
 - `/#route=8` opens a specific route. `/` focuses search and Escape ends exploration.
+- The initial view contains no intro or route-detail card, including when loading a route link. Select a route to open its details; close with × or Escape while keeping the route highlighted. Panning is unrestricted by a Hong Kong bounding box, and window resizing preserves the current map location.
 
 ## Data
 
