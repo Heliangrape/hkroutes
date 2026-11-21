@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c191c"><meta name="description" content="一張可探索的香港幹線地圖。沿著十條主要幹線，認識連接海港、山嶺與城市的橋梁和隧道。">
+  <title>幹線圖誌 — 香港幹線探索器</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./vendor/maplibre-gl.css"><link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./readability.css">
+  <script defer src="./vendor/maplibre-gl.js"></script><script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="幹線圖誌首頁"><svg class="brand-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M9 30V14c0-5 5-7 10-7h12M20 33V21c0-4 3-7 8-7h5" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><circle cx="9" cy="32" r="3" fill="currentColor"/><circle cx="33" cy="7" r="3" fill="currentColor"/></svg><span><strong>幹線圖誌<span class="brand-dot">.</span></strong><small>HONG KONG ROUTE ATLAS</small></span></a>
+    <div class="top-nav"><span class="nav-active">探索地圖</span><button id="about-button">關於資料</button></div>
+    <div class="location-tag"><span class="location-cross">＋</span> HONG KONG <span class="coord-tag">22.3° N · 114.2° E</span></div>
+  </header>
+  <main class="workspace">
+    <aside class="sidebar" aria-label="幹線列表">
+      <div class="sidebar-intro"><div class="eyebrow">城市的另一種讀法</div><h1>十條幹線，<br>串起一座城<span>。</span></h1><p>從海港到山嶺，沿著道路認識香港。</p></div>
+      <div class="search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input id="search" type="search" placeholder="搜尋幹線、地區或橋隧" aria-label="搜尋幹線、地區或橋隧" autocomplete="off"><kbd>/</kbd></div>
+      <div class="filters" aria-label="按幹線走向篩選"><button class="active" data-filter="全部" aria-pressed="true">全部</button><button data-filter="南北" aria-pressed="false">南北</button><button data-filter="東西" aria-pressed="false">東西</button><button data-filter="環迴" aria-pressed="false">環迴</button></div>
+      <div class="list-label"><span>探索幹線</span><span id="route-count">10 條路線</span></div>
+      <nav id="route-list" class="route-list" aria-label="選擇幹線"><p class="loading-copy">正在整理路線…</p></nav>
+      <footer class="sidebar-footer"><span class="shield-mini">HK</span><span>以道路為線，重新認識香港。</span><button id="mobile-close" aria-label="收起路線列表">收起</button></footer>
+    </aside>
+    <section class="map-stage" aria-label="香港幹線互動地圖">
+      <div id="map" aria-label="可拖動及縮放的香港幹線地圖"></div>
+      <div class="map-top"><button class="overview-button" id="overview"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8V3h5M12 3h5v5M17 12v5h-5M8 17H3v-5"/></svg>全港總覽</button><div class="map-layer-toggle" aria-label="地圖節點圖層"><button class="active" id="layer-roads" aria-pressed="true">幹線</button><button id="layer-bridges" aria-pressed="false">橋梁</button><button id="layer-tunnels" aria-pressed="false">隧道</button></div></div>
+      <div class="map-caption"><span>香港主要幹線</span><small>STRATEGIC ROUTE NETWORK</small></div>
+      <div class="map-tools"><button id="zoom-in" aria-label="放大地圖">＋</button><button id="zoom-out" aria-label="縮小地圖">−</button><span></span><button id="north" aria-label="回到正北方向"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 6 17-6-4-6 4Z"/></svg><small>N</small></button></div>
+      <div id="map-message" class="map-message" role="status">正在載入香港地圖…</div>
+      <article id="detail" class="detail-panel" aria-label="幹線詳情"></article>
+      <div class="map-bottom"><span class="legend-line"></span><span>實線 · 已繪製路段</span><span class="legend-dash"></span><span>虛線 · 建造中</span><span class="map-note">路線探索用途</span></div>
+      <button id="mobile-routes" class="mobile-routes"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5h10M7 10h10M7 15h10M3 5h.1M3 10h.1M3 15h.1"/></svg>選擇幹線</button>
+      <div id="tour-bar" class="tour-bar" hidden><div><span class="tour-kicker">沿線探索</span><strong id="tour-label"></strong></div><button id="tour-stop">結束探索</button><div class="tour-track"><span id="tour-progress"></span></div></div>
+    </section>
+  </main>
+  <dialog id="about-dialog"><button class="dialog-close" id="about-close" aria-label="關閉資料說明">×</button><div class="eyebrow">ABOUT THE ATLAS</div><h2>以道路為線，<br>看見香港的連繫。</h2><p>幹線圖誌是一個獨立的地圖探索作品，將香港十條主要幹線、重要橋梁與隧道放在同一張地圖上。</p><h3>資料與使用說明</h3><p>路線名稱與主要途經地點參考<a href="https://www.td.gov.hk/tc/transport_in_hong_kong/hk_strategic_route_and_exit_number_system/map/index_t.html" target="_blank" rel="noopener">香港運輸署幹線圖</a>。道路線形採用 <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap 貢獻者資料（ODbL）</a>，資料快照：2026 年 11 月 21 日。沿線節點為精選地標，並非完整出口列表。</p><p>虛線表示來源資料標示為建造中的路段；幹線列入地圖不代表已全線通車。本作品提供地理探索，行車安排與道路狀況請查閱運輸署最新公告。</p><p class="about-credit">地圖引擎 MapLibre GL JS · 底圖 © CARTO、© OpenStreetMap contributors。底圖需要網絡連線。</p><a class="data-download" href="./data/routes.geojson" download="hong-kong-strategic-routes.geojson">下載路線 GeoJSON</a></dialog>
+  <script nomodule>document.getElementById('map-message').textContent='請使用支援 JavaScript 模組的現代瀏覽器。';</script>
+</body>
+</html>
