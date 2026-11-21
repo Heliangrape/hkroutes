@@ -1,0 +1,698 @@
+{
+  "updated": "2026-11-22",
+  "structures": [
+    {
+      "id": "1",
+      "name": "青馬大橋",
+      "english": "Tsing Ma Bridge and Kap Shui Mun Bridge",
+      "kind": "bridge",
+      "routes": [
+        8
+      ],
+      "coordinates": [
+        114.072449,
+        22.350601
+      ],
+      "metrics": [
+        [
+          "主跨",
+          "1,377 m"
+        ],
+        [
+          "通車年份",
+          "1997"
+        ],
+        [
+          "行車配置",
+          "雙向三線，上下雙層"
+        ]
+      ],
+      "summary": "跨越馬灣海峽，將青衣接上馬灣；橋面同時承載道路與機場鐵路。",
+      "image": "media/photo-1.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/tsing_ma_bridge.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "青馬大橋實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "2",
+      "name": "汲水門大橋",
+      "english": "Kap Shui Mun Bridge",
+      "kind": "bridge",
+      "routes": [
+        8
+      ],
+      "coordinates": [
+        114.055454,
+        22.344239
+      ],
+      "metrics": [
+        [
+          "全長",
+          "820 m"
+        ],
+        [
+          "通車年份",
+          "1997"
+        ],
+        [
+          "行車配置",
+          "雙向三線，公鐵兩用"
+        ]
+      ],
+      "summary": "連接馬灣與大嶼山的斜拉橋，與青馬大橋一起構成青嶼幹線。",
+      "image": "media/photo-2.jpg",
+      "imageSource": "https://fpf.ccidahk.gov.hk/common/images/location/01533/01533d.jpg",
+      "imageCredit": "香港文創產業發展處・電影服務統籌科",
+      "imageCaption": "汲水門大橋近景與青嶼幹線",
+      "source": "https://www.hyd.gov.hk/en/information_corner/hyd_factsheets/doc/e_Kap_Shui_Mun_Bridge.pdf"
+    },
+    {
+      "id": "3",
+      "name": "昂船洲大橋",
+      "english": "Stonecutters Bridge",
+      "kind": "bridge",
+      "routes": [
+        8
+      ],
+      "coordinates": [
+        114.11866,
+        22.325841
+      ],
+      "metrics": [
+        [
+          "全長",
+          "1,596 m"
+        ],
+        [
+          "通車年份",
+          "2009"
+        ],
+        [
+          "行車配置",
+          "雙向三線"
+        ]
+      ],
+      "summary": "跨過藍巴勒海峽的雙塔斜拉橋，是青衣往西九龍路線的一部分。",
+      "image": "media/photo-3.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/stonecutter-bridge.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "昂船洲大橋實景",
+      "source": "https://www.hyd.gov.hk/en/information_corner/hyd_factsheets/doc/e_Stonecutters_Bridge.pdf"
+    },
+    {
+      "id": "4",
+      "name": "汀九橋",
+      "english": "Ting Kau Bridge",
+      "kind": "bridge",
+      "routes": [
+        3
+      ],
+      "coordinates": [
+        114.079939,
+        22.363559
+      ],
+      "metrics": [
+        [
+          "全長",
+          "1,177 m"
+        ],
+        [
+          "通車年份",
+          "1998"
+        ],
+        [
+          "行車配置",
+          "雙向三線"
+        ]
+      ],
+      "summary": "以三座橋塔跨越海峽，連接青衣、屯門公路與大欖隧道方向。",
+      "image": "media/photo-4.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/ting_kau_bridge.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "汀九橋實景",
+      "source": "https://www.hyd.gov.hk/en/information_corner/hyd_factsheets/doc/e_Ting_Kau_Bridge.pdf"
+    },
+    {
+      "id": "5",
+      "name": "深圳灣公路大橋",
+      "english": "Shenzhen Bay Bridge",
+      "kind": "bridge",
+      "routes": [
+        10
+      ],
+      "coordinates": [
+        113.960398,
+        22.471495
+      ],
+      "metrics": [
+        [
+          "全長",
+          "5.5 km"
+        ],
+        [
+          "通車年份",
+          "2007"
+        ],
+        [
+          "行車配置",
+          "雙向三線"
+        ]
+      ],
+      "summary": "橫跨后海灣的跨境道路，北接深圳灣口岸，南連港深西部公路。",
+      "image": "media/photo-5.jpg",
+      "imageSource": "https://gia.info.gov.hk/general/200706/25/P200706250190_photo_396844.JPG",
+      "imageCredit": "香港政府新聞處",
+      "imageCaption": "深圳灣公路大橋實景",
+      "source": "https://www.hyd.gov.hk/en/road_and_railway/road_network/new.html"
+    },
+    {
+      "id": "6",
+      "name": "紅磡海底隧道",
+      "english": "Cross Harbour Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        1
+      ],
+      "coordinates": [
+        114.181697,
+        22.293596
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "1.9 km"
+        ],
+        [
+          "通車年份",
+          "1972"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向兩線"
+        ]
+      ],
+      "summary": "香港首條行車過海隧道，連接紅磡與銅鑼灣。",
+      "image": "media/photo-6.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/cross_harbour_tunnel-01.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "紅磡海底隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "7",
+      "name": "東區海底隧道",
+      "english": "Eastern Harbour Crossing",
+      "kind": "tunnel",
+      "routes": [
+        2
+      ],
+      "coordinates": [
+        114.22411,
+        22.295911
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "2.29 km"
+        ],
+        [
+          "通車年份",
+          "1989"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向兩線"
+        ]
+      ],
+      "summary": "在維港東部連接鰂魚涌與茶果嶺，串起港島東與東九龍。",
+      "image": "media/photo-7.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/EHC.png",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "東區海底隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "8",
+      "name": "西區海底隧道",
+      "english": "Western Harbour Crossing",
+      "kind": "tunnel",
+      "routes": [
+        3
+      ],
+      "coordinates": [
+        114.15245,
+        22.296696
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "2.0 km"
+        ],
+        [
+          "通車年份",
+          "1997"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向三線"
+        ]
+      ],
+      "summary": "由西營盤通往西九龍，接續西九龍公路與3號幹線。",
+      "image": "media/photo-8.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/western_harbour_cross.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "西區海底隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "9",
+      "name": "香港仔隧道",
+      "english": "Aberdeen Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        1
+      ],
+      "coordinates": [
+        114.18003,
+        22.260433
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "1.9 km"
+        ],
+        [
+          "通車年份",
+          "1982"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向兩線"
+        ]
+      ],
+      "summary": "穿越港島山體，連接跑馬地與黃竹坑。",
+      "image": "media/photo-9.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/ABT.jpeg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "香港仔隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "10",
+      "name": "中環及灣仔繞道",
+      "english": "Central - Wan Chai Bypass Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        4
+      ],
+      "coordinates": [
+        114.173576,
+        22.282332
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "3.7 km"
+        ],
+        [
+          "通車年份",
+          "2019"
+        ],
+        [
+          "行車配置",
+          "主要為雙向三線"
+        ]
+      ],
+      "summary": "沿港島北岸地下連接中環、灣仔北與北角，屬4號幹線。",
+      "image": "media/photo-10.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/cwbt.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "中環及灣仔繞道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "11",
+      "name": "啟德隧道",
+      "english": "Kai Tak Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        5
+      ],
+      "coordinates": [
+        114.19568,
+        22.324148
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "1.3 km"
+        ],
+        [
+          "通車年份",
+          "1982"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向兩線"
+        ]
+      ],
+      "summary": "建於舊啟德機場跑道下方，連接九龍灣與馬頭角。",
+      "image": "media/photo-11.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/kai_tak_tunnel.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "啟德隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "12",
+      "name": "獅子山隧道",
+      "english": "Lion Rock Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        1
+      ],
+      "coordinates": [
+        114.178259,
+        22.36198
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "1.4 km"
+        ],
+        [
+          "通車年份",
+          "1967 / 1978"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向兩線"
+        ]
+      ],
+      "summary": "穿越獅子山，連接九龍塘與大圍；兩條管道先後通車。",
+      "image": "media/photo-12.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/lion_rock_tunnel.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "獅子山隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "13",
+      "name": "城門隧道",
+      "english": "Shing Mun Tunnels",
+      "kind": "tunnel",
+      "routes": [
+        9
+      ],
+      "coordinates": [
+        114.163513,
+        22.379843
+      ],
+      "metrics": [
+        [
+          "隧道總長",
+          "2.6 km"
+        ],
+        [
+          "通車年份",
+          "1990"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向兩線"
+        ]
+      ],
+      "summary": "越過新界中部山嶺，連接荃灣梨木樹與大圍，屬9號幹線。",
+      "image": "media/photo-13.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/SMTs.png",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "城門隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "14",
+      "name": "大老山隧道",
+      "english": "Tate's Cairn Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        2
+      ],
+      "coordinates": [
+        114.208951,
+        22.353654
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "4.0 km"
+        ],
+        [
+          "通車年份",
+          "1991"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向兩線"
+        ]
+      ],
+      "summary": "穿越九龍山嶺，將鑽石山連到沙田小瀝源。",
+      "image": "media/photo-14.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/tate_cairn_s_tunnel.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "大老山隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "15",
+      "name": "大欖隧道",
+      "english": "Tai Lam Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        3
+      ],
+      "coordinates": [
+        114.061917,
+        22.392199
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "3.8 km"
+        ],
+        [
+          "通車年份",
+          "1998"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向三線"
+        ]
+      ],
+      "summary": "連接荃灣汀九與元朗，是3號幹線穿越大欖山區的路段。",
+      "image": "media/photo-15.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/TLT.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "大欖隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "16",
+      "name": "長青隧道",
+      "english": "Cheung Tsing Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        3
+      ],
+      "coordinates": [
+        114.103545,
+        22.345353
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "1.6 km"
+        ],
+        [
+          "通車年份",
+          "1997"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向三線"
+        ]
+      ],
+      "summary": "穿越青衣，連接長青公路與青葵公路。",
+      "image": "media/photo-16.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/cheung_tsing_tunnel.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "長青隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "17",
+      "name": "南灣隧道",
+      "english": "Nam Wan Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        8
+      ],
+      "coordinates": [
+        114.101095,
+        22.338754
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "1.2 km"
+        ],
+        [
+          "通車年份",
+          "2009"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向三線"
+        ]
+      ],
+      "summary": "位於青衣南部，銜接長青公路與昂船洲大橋。",
+      "image": "media/photo-17.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/nam_wan_tunnel.jpeg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "南灣隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "18",
+      "name": "尖山隧道",
+      "english": "Eagle's Nest Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        8
+      ],
+      "coordinates": [
+        114.15642,
+        22.350189
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "2.1 km"
+        ],
+        [
+          "通車年份",
+          "2008"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向三線"
+        ]
+      ],
+      "summary": "青沙公路的穿山路段，連接西九龍與沙田方向。",
+      "image": "media/photo-18.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/eagles_nest_tunnel.jpeg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "尖山隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "19",
+      "name": "將軍澳隧道",
+      "english": "Tseung Kwan O Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        7
+      ],
+      "coordinates": [
+        114.249834,
+        22.320848
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "0.9 km"
+        ],
+        [
+          "通車年份",
+          "1990"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向兩線"
+        ]
+      ],
+      "summary": "穿越山體連接觀塘與將軍澳，屬7號幹線。",
+      "image": "media/photo-19.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/TKOT.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "將軍澳隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "20",
+      "name": "將軍澳—藍田隧道",
+      "english": "Tseung Kwan O – Lam Tin Tunnel",
+      "kind": "tunnel",
+      "routes": [
+        6
+      ],
+      "coordinates": [
+        114.244196,
+        22.302639
+      ],
+      "metrics": [
+        [
+          "隧道長度",
+          "2.2 km"
+        ],
+        [
+          "通車年份",
+          "2022"
+        ],
+        [
+          "行車配置",
+          "雙管，每方向兩線"
+        ]
+      ],
+      "summary": "連接將軍澳與藍田、觀塘方向，構成6號幹線東段。",
+      "image": "media/photo-20.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/TKO-LTT.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "將軍澳—藍田隧道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "21",
+      "name": "中九龍繞道",
+      "english": "Central Kowloon Bypass (Yau Ma Tei Section Tunnel)",
+      "kind": "tunnel",
+      "routes": [
+        6
+      ],
+      "coordinates": [
+        114.195167,
+        22.318198
+      ],
+      "metrics": [
+        [
+          "油麻地段隧道",
+          "約 3.9 km"
+        ],
+        [
+          "通車年份",
+          "2025（油麻地段）"
+        ],
+        [
+          "行車配置",
+          "雙向三線"
+        ]
+      ],
+      "summary": "由西九龍經九龍中部通往啟德與九龍灣；參數為已通車的油麻地段隧道。",
+      "image": "media/photo-21.jpg",
+      "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/CKB%20pic.jpg",
+      "imageCredit": "香港運輸署",
+      "imageCaption": "中九龍繞道實景",
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    }
+  ]
+}

@@ -2,3 +2,6 @@
 *.tar.gz
 *.tgz
 qa/
+
+__pycache__/
+*.pyc

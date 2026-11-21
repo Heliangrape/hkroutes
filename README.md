@@ -12,13 +12,15 @@ Open http://127.0.0.1:4173. The basemap and optional web font require network ac
 
 ## Features
 
-- Ten geographically accurate route overlays, including separately styled construction segments.
-- Search by route number, district, bridge, or tunnel; filter by route orientation.
-- Select routes from the map, numbered shields, or sidebar.
-- 66 editorial landmarks with map focus and a sequential guided exploration.
-- Bridge and tunnel landmark layers, route share links, GeoJSON download, responsive mobile layout, keyboard controls, and reduced-motion support.
-- `/#route=8` opens a specific route. `/` focuses search and Escape ends exploration.
-- The initial view contains no intro or route-detail card, including when loading a route link. Select a route to open its details; close with × or Escape while keeping the route highlighted. Panning is unrestricted by a Hong Kong bounding box, and window resizing preserves the current map location.
+- Two explicit modes: routes and bridges/tunnels, with a single unified browsing panel.
+- Mobile panel has swipe/tap controlled collapsed and expanded states. Its state is stored locally and is never changed by route selection, mode changes, zoom, overview, tours, or navigation.
+- Map visual center follows the panel continuously; route fitting always calculates zoom from the collapsed panel area. Swiping never changes zoom.
+- Selected route retains its color; all others and their route shields become grayscale. No ambiguous circular route markers or glow effects.
+- Bridge/tunnel mode renders every route in gray and shows 5 blue bridge markers plus 16 amber tunnel markers. Each item includes measurements, a short description, official photographs, and source credits.
+- Search by route, district, bridge, or tunnel; sequential route tour and shareable links.
+- Source credits are a secondary inline disclosure in the panel footer.
+
+Run geometry/data regression checks with `node --test tests/camera.test.mjs`.
 
 ## Data
 
@@ -45,3 +47,9 @@ Basemap: CARTO Dark Matter / OpenStreetMap, with locally adjusted colors. Its so
 - `.openai/hosting.json` — Sites deployment identity.
 
 This is a geographic learning experience. Refer to the Transport Department for road opening schedules, driving restrictions, and current conditions.
+
+## Bridge and tunnel data
+
+`dist/data/structures.json` records per-item measurements, official source URLs, photo credits, and WGS84 positions projected onto matching route geometry. Facts are checked against the Transport Department details page and Highways Department bridge factsheets. Measurements explicitly distinguish main span, overall bridge length, and tunnel length. The Central Kowloon Bypass entry uses the Yau Ma Tei section tunnel, not the entire future Route 6.
+
+Photos are sourced from the Hong Kong Transport Department, Information Services Department, and Film Promotion and Facilitation Section; each photo retains a direct source link and credit. `scripts/prepare-structures.py` downloads and optimizes the original public photographs with macOS sips.
