@@ -5,3 +5,26 @@
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
 @media(max-width:760px){.maplibregl-ctrl-bottom-left{bottom:var(--map-bottom,137px)!important}.maplibregl-ctrl-bottom-right{bottom:var(--map-bottom,137px)!important}}
+/* Immersive selections: the map is the entire canvas; details live behind one small pull tab. */
+#focus-label{display:none}
+.parent-routes{padding:0 0 22px;display:flex;flex-direction:column;gap:10px}.parent-routes>span{font-size:12px;color:#9db6a6}
+.view-focus .topbar,.view-overview .topbar,.view-focus .map-top,.view-overview .map-top{display:none}
+.view-focus .workspace,.view-overview .workspace{display:block}
+.view-focus .map-stage,.view-overview .map-stage{position:absolute;inset:0}
+.view-overview .explorer{display:none}
+.view-focus .map-badge,.view-overview .map-badge,.view-focus .place-label,.view-overview .place-label{display:none}
+.view-focus .explorer{position:absolute;grid-column:auto;grid-row:auto;left:50%;right:auto;bottom:10px;width:min(430px,calc(100% - 30px));height:min(64dvh,590px);border:1px solid #3b535f;border-radius:12px;box-shadow:0 8px 40px #0005;transform:translate3d(-50%,var(--sheet-shift),0);background:#101f29f5;backdrop-filter:blur(15px);padding-bottom:0}
+.view-focus .sheet-drag-zone{touch-action:none;flex-shrink:0}
+.view-focus .sheet-grip{display:flex;height:34px;width:100%;align-items:center;justify-content:center;gap:12px;padding:0 16px;cursor:ns-resize;touch-action:none;color:#b8ced3}
+.view-focus .sheet-grip>span{height:3px;width:25px;background:#8ca8b1;border-radius:4px;flex-shrink:0}
+.view-focus #focus-label{display:block;font-size:12px;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+.view-focus .sheet-grip:focus-visible{outline-offset:-3px}
+.view-focus .sheet-hint{display:none}
+.view-focus .panel-heading{height:64px;padding:8px 20px 13px}.view-focus .panel-heading h1{font-size:21px;margin-top:6px}
+.view-focus .quick-select{display:none}
+.view-focus .explorer[data-sheet=collapsed] .panel-heading{display:none}
+.view-focus .panel-body{padding:17px 20px 32px}
+.view-focus .tour-bar{display:none}
+.view-focus .maplibregl-ctrl-bottom-right,.view-overview .maplibregl-ctrl-bottom-right{bottom:3px!important;right:5px;opacity:.45}
+.view-focus .maplibregl-ctrl-attrib,.view-overview .maplibregl-ctrl-attrib{font-size:8px!important;background:transparent!important}
+@media(prefers-reduced-motion:reduce){.view-focus .explorer{will-change:auto}}

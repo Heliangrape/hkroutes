@@ -12,15 +12,15 @@ Open http://127.0.0.1:4173. The basemap and optional web font require network ac
 
 ## Features
 
-- Two explicit modes: routes and bridges/tunnels, with a single unified browsing panel.
-- Mobile panel has swipe/tap controlled collapsed and expanded states. Its state is stored locally and is never changed by route selection, mode changes, zoom, overview, tours, or navigation.
-- Map visual center follows the panel continuously; route fitting always calculates zoom from the collapsed panel area. Swiping never changes zoom.
-- Selected route retains its color; all others and their route shields become grayscale. No ambiguous circular route markers or glow effects.
-- Bridge/tunnel mode renders every route in gray and shows 5 blue bridge markers plus 16 amber tunnel markers. Each item includes measurements, a short description, official photographs, and source credits.
-- Search by route, district, bridge, or tunnel; sequential route tour and shareable links.
-- Source credits are a secondary inline disclosure in the panel footer.
+- Browse routes and bridges/tunnels, then enter a unified full-map focus scene by selecting any item. Unrelated labels and navigation disappear; only a 34-pixel pull-up detail tab remains. Details work on desktop and mobile.
+- Tap empty map space or press Escape to return to the full browser view. The Hong Kong overview button enters a control-free whole-network display; clicking a road enters route focus directly.
+- Route detail bridge/tunnel entries open their facility focus immediately. Facility details place parent-route return links above the photo.
+- Focus dims all other roads and emphasizes the selected route or physical bridge/tunnel geometry. Directional light streaks follow connected road polylines; construction segments carry no animated traffic.
+- Traffic is a visual effect, not live traffic data. Animation stops for reduced-motion preferences and pauses in background tabs.
+- Panel visual center linkage remains continuous; expansion does not change map zoom. Browse expansion preference is stored locally; selecting an item explicitly starts a clean collapsed focus scene.
+- Twenty-one bridge/tunnel entries include measurements, descriptions, official photographs, and source credits. Credits remain a secondary panel disclosure; map attribution is a small text footer.
 
-Run geometry/data regression checks with `node --test tests/camera.test.mjs`.
+Run geometry, data and traffic regression checks with `node --test tests/*.test.mjs`.
 
 ## Data
 
