@@ -2,6 +2,12 @@
 
 An independent, Traditional Chinese map explorer for Hong Kong's ten strategic routes. Built with vanilla JavaScript, CSS, and a locally vendored MapLibre GL JS 5.14.0. No build step, backend, accounts, or API keys are required.
 
+Live site: https://heliangrape.github.io/hkroutes/
+
+## Deployment
+
+Push to `main` to publish `dist/` through the GitHub Pages workflow in `.github/workflows/pages.yml`. The workflow runs the existing regression checks before deployment. GitHub Pages uses GitHub Actions as its publishing source. All local asset URLs are relative so the site works under `/hkroutes/`.
+
 ## Run locally
 
 ```sh
