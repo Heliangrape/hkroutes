@@ -1,5 +1,6 @@
 const normalize=s=>s.replace(/[\s\-–—－]/g,'');
-export function facilityFeatures(features,facility){
+export function facilityFeatures(features,facility,interchanges=[]){
+ if(facility.kind==='interchange')return interchanges.filter(f=>f.properties.structure===facility.id);
  const aliases={'紅磡海底隧道':'海底隧道','中環及灣仔繞道':'繞道'};
  const name=normalize(aliases[facility.name]||facility.name);
  const matches=features.filter(f=>facility.routes.includes(f.properties.route)&&normalize(f.properties.name||'').includes(name));
@@ -21,22 +22,22 @@ export function buildTracks(features){
 }
 function position(track,d){const ds=track.distances;let lo=0,hi=ds.length-1;while(lo+1<hi){const m=(lo+hi)>>1;if(ds[m]<=d)lo=m;else hi=m;}const t=(d-ds[lo])/Math.max(.001,ds[hi]-ds[lo]);return {p:track.coords[lo].map((v,i)=>v+(track.coords[hi][i]-v)*t),index:hi};}
 function section(track,a,b){const start=position(track,a),end=position(track,b);return [start.p,...track.coords.slice(start.index,end.index),end.p];}
-export function trafficFrame(tracks,seconds,metersPerPixel){
+export function trafficFrame(tracks,seconds,metersPerPixel,{prominence=1}={}){
  const features=[];let total=0;
  tracks.forEach((track,index)=>{
-  const count=Math.max(1,Math.min(10,Math.round(track.length/(metersPerPixel*75))));
-  const tail=Math.min(track.length*.3,metersPerPixel*7);
+  const count=Math.max(1,Math.min(10,Math.round(track.length/(metersPerPixel*75/Math.sqrt(prominence)))));
+  const tail=Math.min(track.length*.3,metersPerPixel*7*prominence);
   for(let i=0;i<count&&total<120;i++,total++){
    const head=((seconds*metersPerPixel*(15+index%4)+track.length*(i+.37)/count)%track.length);
    if(head<tail)continue;
-   for(let part=0;part<3;part++){const a=head-tail+tail*part/3,b=a+tail/3;features.push({type:'Feature',properties:{alpha:[.17,.45,.95][part]},geometry:{type:'LineString',coordinates:section(track,a,b)}});}
+   for(let part=0;part<3;part++){const a=head-tail+tail*part/3,b=a+tail/3;features.push({type:'Feature',properties:{alpha:Math.min(1,[.17,.45,.95][part]*Math.sqrt(prominence))},geometry:{type:'LineString',coordinates:section(track,a,b)}});}
   }
  });
  return {type:'FeatureCollection',features};
 }
 export function createTraffic(map,reducedMotion){
- let tracks=[],frame=0,last=0,start=0;
- function tick(now){frame=requestAnimationFrame(tick);if(now-last<48||document.hidden)return;last=now;const mpp=156543.03392*Math.cos(map.getCenter().lat*Math.PI/180)/2**map.getZoom();map.getSource('traffic')?.setData(trafficFrame(tracks,(now-start)/1000,mpp));}
+ let tracks=[],options={},frame=0,last=0,start=0;
+ function tick(now){frame=requestAnimationFrame(tick);if(now-last<48||document.hidden)return;last=now;const mpp=156543.03392*Math.cos(map.getCenter().lat*Math.PI/180)/2**map.getZoom();map.getSource('traffic')?.setData(trafficFrame(tracks,(now-start)/1000,mpp,options));}
  function stop(){cancelAnimationFrame(frame);tracks=[];map.getSource('traffic')?.setData({type:'FeatureCollection',features:[]});}
- return {start(features){stop();if(reducedMotion)return;tracks=buildTracks(features);start=performance.now();frame=requestAnimationFrame(tick);},stop};
+ return {start(features,profile={}){stop();options=profile;if(reducedMotion)return;tracks=buildTracks(features);start=performance.now();frame=requestAnimationFrame(tick);},stop};
 }

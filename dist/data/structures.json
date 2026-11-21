@@ -693,6 +693,132 @@
       "imageCredit": "香港運輸署",
       "imageCaption": "中九龍繞道實景",
       "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+    },
+    {
+      "id": "22",
+      "name": "青衣西北交匯處",
+      "english": "North West Tsing Yi Interchange",
+      "routes": [
+        3,
+        8
+      ],
+      "coordinates": [
+        114.0841,
+        22.3545
+      ],
+      "bbox": [
+        114.0782,
+        22.3498,
+        114.09,
+        22.361
+      ],
+      "location": "青衣西北",
+      "roads": "青嶼幹線 · 汀九橋 · 長青公路",
+      "summary": "3號與8號幹線在青衣西北角銜接。跨海主線、迴轉匝道與往九龍方向的分支在狹長山坡間分層展開。",
+      "source": "https://www.info.gov.hk/gia/general/199804/27/0427112.htm",
+      "kind": "interchange",
+      "metrics": [
+        [
+          "連接幹線",
+          "3 · 8 號"
+        ],
+        [
+          "所在區域",
+          "青衣西北"
+        ],
+        [
+          "主要銜接",
+          "青嶼幹線 · 汀九橋 · 長青公路"
+        ]
+      ],
+      "image": "media/interchange-22.svg",
+      "imageSource": "https://www.openstreetmap.org/copyright",
+      "imageCredit": "OpenStreetMap contributors · ODbL",
+      "imageCaption": "青衣西北交匯處匝道結構示意（道路上下穿標記）"
+    },
+    {
+      "id": "23",
+      "name": "荔灣交匯處",
+      "english": "Lai Wan Interchange",
+      "routes": [
+        3,
+        8
+      ],
+      "coordinates": [
+        114.145,
+        22.332
+      ],
+      "bbox": [
+        114.138,
+        22.3274,
+        114.151,
+        22.3362
+      ],
+      "location": "荔枝角灣",
+      "roads": "西九龍公路 · 青沙公路 · 連翔道",
+      "summary": "青沙公路在西九龍公路旁分岔和匯入，長彎匝道穿過市區高架路網。這裡展示主線與多條方向性連接路的上下穿關係。",
+      "source": "https://www.legco.gov.hk/yr10-11/chinese/brief/ssc10_20110923-c.pdf",
+      "kind": "interchange",
+      "metrics": [
+        [
+          "連接幹線",
+          "3 · 8 號"
+        ],
+        [
+          "所在區域",
+          "荔枝角灣"
+        ],
+        [
+          "主要銜接",
+          "西九龍公路 · 青沙公路 · 連翔道"
+        ]
+      ],
+      "image": "media/interchange-23.svg",
+      "imageSource": "https://www.openstreetmap.org/copyright",
+      "imageCredit": "OpenStreetMap contributors · ODbL",
+      "imageCaption": "荔灣交匯處匝道結構示意（道路上下穿標記）"
+    },
+    {
+      "id": "24",
+      "name": "蝴蝶谷交匯處",
+      "english": "Butterfly Valley Interchange",
+      "routes": [
+        7,
+        8
+      ],
+      "coordinates": [
+        114.1415,
+        22.3411
+      ],
+      "bbox": [
+        114.1374,
+        22.338,
+        114.1467,
+        22.3442
+      ],
+      "location": "蝴蝶谷",
+      "roads": "青沙公路 · 呈祥道 · 青山公路",
+      "summary": "7號與8號幹線在蝴蝶谷一帶銜接。高架青沙公路、呈祥道與地區道路的轉向匝道，在山谷入口形成緊湊的分層路網。",
+      "source": "https://www.tpb.gov.hk/uploads/page/meetings/MPC/A_K16_44/A_K16_44_Appendix.pdf",
+      "kind": "interchange",
+      "metrics": [
+        [
+          "連接幹線",
+          "7 · 8 號"
+        ],
+        [
+          "所在區域",
+          "蝴蝶谷"
+        ],
+        [
+          "主要銜接",
+          "青沙公路 · 呈祥道 · 青山公路"
+        ]
+      ],
+      "image": "media/interchange-24.svg",
+      "imageSource": "https://www.openstreetmap.org/copyright",
+      "imageCredit": "OpenStreetMap contributors · ODbL",
+      "imageCaption": "蝴蝶谷交匯處匝道結構示意（道路上下穿標記）"
     }
   ]
 }

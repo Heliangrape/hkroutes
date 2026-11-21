@@ -18,7 +18,7 @@ Open http://127.0.0.1:4173. The basemap and optional web font require network ac
 - Focus dims all other roads and emphasizes the selected route or physical bridge/tunnel geometry. Directional light streaks follow connected road polylines; construction segments carry no animated traffic.
 - Traffic is a visual effect, not live traffic data. Animation stops for reduced-motion preferences and pauses in background tabs.
 - Panel visual center linkage remains continuous; expansion does not change map zoom. Browse expansion preference is stored locally; selecting an item explicitly starts a clean collapsed focus scene.
-- Twenty-one bridge/tunnel entries include measurements, descriptions, official photographs, and source credits. Credits remain a secondary panel disclosure; map attribution is a small text footer.
+- Twenty-four infrastructure entries include measurements, descriptions, official photographs, and source credits. Credits remain a secondary panel disclosure; map attribution is a small text footer.
 
 Run geometry, data and traffic regression checks with `node --test tests/*.test.mjs`.
 
@@ -53,3 +53,19 @@ This is a geographic learning experience. Refer to the Transport Department for 
 `dist/data/structures.json` records per-item measurements, official source URLs, photo credits, and WGS84 positions projected onto matching route geometry. Facts are checked against the Transport Department details page and Highways Department bridge factsheets. Measurements explicitly distinguish main span, overall bridge length, and tunnel length. The Central Kowloon Bypass entry uses the Yau Ma Tei section tunnel, not the entire future Route 6.
 
 Photos are sourced from the Hong Kong Transport Department, Information Services Department, and Film Promotion and Facilitation Section; each photo retains a direct source link and credit. `scripts/prepare-structures.py` downloads and optimizes the original public photographs with macOS sips.
+
+## Route context and interchange pilot
+
+Route focus uses slightly longer, brighter light trails and non-interactive, low-contrast labels for major districts, settlements and water/land features. Labels are curated editorial anchors in `dist/data/places.json`; collision culling adapts to narrow views and an expanded panel. Facility focus and the full overview keep their label-free presentation.
+
+The bridge/tunnel catalog also includes three interchange pilot scenes: North West Tsing Yi, Lai Wan and Butterfly Valley. `dist/data/interchanges.geojson` contains clipped motorway/trunk/primary mainlines and ramps from OpenStreetMap. Dark-to-light silver represents the data's lower-to-upper road layers, with dark deck edges at crossings. Relative ordering is a structural illustration, not a survey-grade 3D engineering model. Per-item SVGs are geometry drawings, clearly identified as diagrams.
+
+Regenerate base structures before appending interchange entries:
+
+```sh
+python3 scripts/prepare-structures.py
+python3 scripts/prepare-interchanges.py
+python3 scripts/prepare-places.py
+```
+
+Raw interchange ways are retained in `scripts/interchanges-ways.json`, retrieved from the public Overpass API on 2026-11-22. The same ODbL attribution applies to derived geometry and diagrams.

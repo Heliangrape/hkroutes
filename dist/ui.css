@@ -28,3 +28,22 @@
 .view-focus .maplibregl-ctrl-bottom-right,.view-overview .maplibregl-ctrl-bottom-right{bottom:3px!important;right:5px;opacity:.45}
 .view-focus .maplibregl-ctrl-attrib,.view-overview .maplibregl-ctrl-attrib{font-size:8px!important;background:transparent!important}
 @media(prefers-reduced-motion:reduce){.view-focus .explorer{will-change:auto}}
+/* Geographical names are quiet context, never alternative map controls. */
+.context-label{font-size:12px;letter-spacing:1px;opacity:.72;text-shadow:0 1px 4px #06101c;user-select:none}
+.context-label.context-region{font-size:14px;letter-spacing:3px}
+.context-label.context-water{font-size:11px;font-style:italic;letter-spacing:2px;color:#8daebd}
+.context-label.context-land{font-size:11px;letter-spacing:1.5px}
+.view-focus.with-geography .place-label.context-label{display:block;opacity:.46;color:#a0afb5}
+.view-focus.with-geography .place-label.context-water{opacity:.3;color:#8da6b0}
+.view-focus.with-geography .place-label.context-region,.view-focus.with-geography .place-label.context-land{opacity:.32}
+.route-junctions{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.route-junctions button{display:flex;gap:11px;align-items:center;padding:12px 0;border-bottom:1px solid #2f424a;text-align:left;color:#c0ced8;font-size:14px}
+.route-junctions svg{width:19px;height:19px;flex-shrink:0}
+.photo img.structure-diagram{aspect-ratio:900/800;object-fit:contain;max-height:none;background:#08141d}
+@media(max-width:760px){.structure-counts{gap:16px}.map-legend{gap:10px}.context-label{font-size:12px}.context-label.context-region{font-size:13px}}
+/* Marker sets inline opacity; retain the intended secondary emphasis. */
+.context-label{opacity:.72!important}
+.view-focus.with-geography .place-label.context-label{opacity:.46!important}
+.view-focus.with-geography .place-label.context-water{opacity:.3!important}
+.view-focus.with-geography .place-label.context-region,.view-focus.with-geography .place-label.context-land{opacity:.32!important}
+.layer-note{font-size:13px;color:#9aabb5;line-height:1.85;border-left:2px solid #7d939e;padding-left:11px;margin:0 0 20px}
