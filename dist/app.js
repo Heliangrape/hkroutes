@@ -25,6 +25,11 @@ function listRoutes() {
  $('#route-list').innerHTML=routes.length?routes.map(r=>`<button class="route-row ${r.id===state.selected?'selected':''}" data-route="${r.id}" style="--route:${r.color}" aria-pressed="${r.id===state.selected}" aria-label="${r.id}號幹線，${esc(r.endpoints)}"><span class="shield" aria-hidden="true">${r.id}</span><span class="route-row-content"><span class="route-row-title">${r.id} 號幹線<span class="route-swatch"></span></span><span class="route-row-endpoints">${esc(r.endpoints)}${r.hasConstruction?'<small>含建造中</small>':''}</span></span></button>`).join(''):'<p class="empty-results">暫時找不到相符的幹線。<br>試試「青馬」、「沙田」或路線號碼。</p>';
  $('#route-list').querySelectorAll('[data-route]').forEach(el=>el.addEventListener('click',()=>selectRoute(Number(el.dataset.route))));
 }
+function setSidebar(open) {
+ const sidebar=$('.sidebar');sidebar.classList.toggle('open',open);
+ sidebar.inert=innerWidth<=760&&!open;
+ $('#mobile-routes').setAttribute('aria-expanded',String(open));
+}
 function renderDetail() {
  const r=state.routes.find(r=>r.id===state.selected);
  const el=$('#detail');
@@ -50,7 +55,7 @@ function selectRoute(id,{fit=true,hash=true}={}) {
  stopTour(false);hoverPopup?.remove();state.selected=id;state.node=null;
  if(hash)history.replaceState(null,'',id?`#route=${id}`:location.pathname+location.search);
  listRoutes();renderDetail();updateMap();
- if(fit)fitRoute(id);$('.sidebar').classList.remove('open');$('#mobile-routes').setAttribute('aria-expanded','false');
+ if(fit)fitRoute(id);setSidebar(false);
 }
 function updateMap() {
  if(!state.mapReady)return;
@@ -176,11 +181,11 @@ function bindUI() {
  }));
  const dialog=$('#about-dialog');$('#about-button').addEventListener('click',()=>{stopTour(false);dialog.showModal();});$('#about-close').addEventListener('click',()=>dialog.close());
  dialog.addEventListener('click',e=>{const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
- $('#mobile-routes').setAttribute('aria-expanded','false');$('#mobile-routes').addEventListener('click',()=>{$('.sidebar').classList.toggle('open');$('#mobile-routes').setAttribute('aria-expanded',$('.sidebar').classList.contains('open'));});
- $('#mobile-close').addEventListener('click',()=>{$('.sidebar').classList.remove('open');$('#mobile-routes').setAttribute('aria-expanded','false');});
- document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)&&!dialog.open){e.preventDefault();if(innerWidth<=760)$('.sidebar').classList.add('open');$('#search').focus();}if(e.key==='Escape'){stopTour();$('.sidebar').classList.remove('open');$('#mobile-routes').setAttribute('aria-expanded','false');}});
+ setSidebar(false);$('#mobile-routes').addEventListener('click',()=>setSidebar(!$('.sidebar').classList.contains('open')));
+ $('#mobile-close').addEventListener('click',()=>{setSidebar(false);$('#mobile-routes').focus();});
+ document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)&&!dialog.open){e.preventDefault();if(innerWidth<=760)setSidebar(true);$('#search').focus();}if(e.key==='Escape'){stopTour();setSidebar(false);}});
  window.addEventListener('hashchange',()=>{const id=Number(new URLSearchParams(location.hash.slice(1)).get('route'));selectRoute(state.routes.some(r=>r.id===id)?id:null,{hash:false});});
- let resizeTimer;window.addEventListener('resize',()=>{if(map)map.resize();clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(map&&!state.tour)fitRoute(state.selected,false);},120);});
+ let resizeTimer;window.addEventListener('resize',()=>{setSidebar($('.sidebar').classList.contains('open'));if(map)map.resize();clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(map&&!state.tour)fitRoute(state.selected,false);},120);});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopTour(false);});
 }
 async function main() {
