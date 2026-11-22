@@ -734,7 +734,7 @@
       "image": "media/interchange-22.svg",
       "imageSource": "https://www.openstreetmap.org/copyright",
       "imageCredit": "OpenStreetMap contributors · ODbL",
-      "imageCaption": "青衣西北交匯處匝道結構示意（道路上下穿標記）"
+      "imageCaption": "青衣西北交匯處連接結構示意（幹線原色與匝道漸變）"
     },
     {
       "id": "23",
@@ -776,7 +776,7 @@
       "image": "media/interchange-23.svg",
       "imageSource": "https://www.openstreetmap.org/copyright",
       "imageCredit": "OpenStreetMap contributors · ODbL",
-      "imageCaption": "荔灣交匯處匝道結構示意（道路上下穿標記）"
+      "imageCaption": "荔灣交匯處連接結構示意（幹線原色與匝道漸變）"
     },
     {
       "id": "24",
@@ -818,7 +818,7 @@
       "image": "media/interchange-24.svg",
       "imageSource": "https://www.openstreetmap.org/copyright",
       "imageCredit": "OpenStreetMap contributors · ODbL",
-      "imageCaption": "蝴蝶谷交匯處匝道結構示意（道路上下穿標記）"
+      "imageCaption": "蝴蝶谷交匯處連接結構示意（幹線原色與匝道漸變）"
     }
   ]
 }

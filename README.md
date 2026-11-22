@@ -16,17 +16,20 @@ python3 -m http.server 4173 --directory dist --bind 127.0.0.1
 
 Open http://127.0.0.1:4173. The basemap and optional web font require network access. Route geometries and metadata are served locally. A slow basemap falls back to a route-only view; a non-WebGL browser can still browse the route list and descriptions.
 
-## Features
+## Interaction
 
-- Browse routes and bridges/tunnels, then enter a unified full-map focus scene by selecting any item. Unrelated labels and navigation disappear; only a 34-pixel pull-up detail tab remains. Details work on desktop and mobile.
-- Tap empty map space or press Escape to return to the full browser view. The Hong Kong overview button enters a control-free whole-network display; clicking a road enters route focus directly.
-- Route detail bridge/tunnel entries open their facility focus immediately. Facility details place parent-route return links above the photo.
-- Focus dims all other roads and emphasizes the selected route or physical bridge/tunnel geometry. Directional light streaks follow connected road polylines; construction segments carry no animated traffic.
-- Traffic is a visual effect, not live traffic data. Animation stops for reduced-motion preferences and pauses in background tabs.
-- Panel visual center linkage remains continuous; expansion does not change map zoom. Browse expansion preference is stored locally; selecting an item explicitly starts a clean collapsed focus scene.
-- Twenty-four infrastructure entries include measurements, descriptions, official photographs, and source credits. Credits remain a secondary panel disclosure; map attribution is a small text footer.
+The map is one continuous overview-to-detail experience, with no separate route or infrastructure tabs.
 
-Run geometry, data and traffic regression checks with `node --test tests/*.test.mjs`.
+- Start in a full-screen Hong Kong overview. Geographical names and route numbers are quiet text, with no number badges or control panels.
+- Select a road or its number to focus the route. Along-route bridge, tunnel and interchange names are direct map links; zooming in reveals more names. The same items are available as plain text in the pull-up details.
+- Select a facility to enter its detail scene. Click an interchange ramp or mainline to isolate it and read its source road, destination road, direction and available lane/destination tags.
+- Tap empty space or Escape: facility → originating route → whole network. In the whole-network scene, empty space returns to the last visited route. On a first visit, select a route to start. Each scene retains its own camera, including manual pan/zoom.
+- The pull-up panel opens or closes only when the user drags or toggles its handle. Selecting another object preserves expansion; expanding changes visual center without changing zoom.
+- Facilities have one stable identity shared by all their parent routes. Each visit retains its originating route separately, including in shareable hash links.
+- Bridges and tunnels show their route number, neighbouring route destinations and a principal measurement on the map, with photos, parameters and source credits in the pull-up.
+- Traffic is an illustrative effect, not live traffic data. Animation honours reduced-motion preferences and pauses in background tabs. Construction segments carry no traffic animation.
+
+Run regression checks with `node --test tests/*.test.mjs`.
 
 ## Data
 
@@ -60,18 +63,23 @@ This is a geographic learning experience. Refer to the Transport Department for 
 
 Photos are sourced from the Hong Kong Transport Department, Information Services Department, and Film Promotion and Facilitation Section; each photo retains a direct source link and credit. `scripts/prepare-structures.py` downloads and optimizes the original public photographs with macOS sips.
 
-## Route context and interchange pilot
+## Interchange connections and geography
 
-Route focus uses slightly longer, brighter light trails and non-interactive, low-contrast labels for major districts, settlements and water/land features. Labels are curated editorial anchors in `dist/data/places.json`; collision culling adapts to narrow views and an expanded panel. Facility focus and the full overview keep their label-free presentation.
+Route focus uses light trails with quiet settlement and geographical labels from `dist/data/places.json`. Facility focus replaces these labels with road and connection annotations, using collision avoidance adapted to the current viewport.
 
-The bridge/tunnel catalog also includes three interchange pilot scenes: North West Tsing Yi, Lai Wan and Butterfly Valley. `dist/data/interchanges.geojson` contains clipped motorway/trunk/primary mainlines and ramps from OpenStreetMap. Dark-to-light silver represents the data's lower-to-upper road layers, with dark deck edges at crossings. Relative ordering is a structural illustration, not a survey-grade 3D engineering model. Per-item SVGs are geometry drawings, clearly identified as diagrams.
+Three interchange pilot scenes use actual clipped OpenStreetMap geometry: North West Tsing Yi, Lai Wan and Butterfly Valley. Mainlines retain their strategic route colour. Ramps transition from the source route colour to the destination route colour; grey represents local/un-numbered or unresolved roads. Road layer ordering supplies dark edges at crossings.
 
-Regenerate base structures before appending interchange entries:
+`scripts/prepare-connections.py` derives movements by traversing shared OSM nodes in the legal way direction, stopping at a non-link road. Lines crossing without a shared node do not connect. Upstream/downstream ramp distances maintain colour progress along split ways. Each feature retains OSM way identity, source/destination references and road names, geographic direction, available lane/destination tags, and whether its terminals were resolved. Labels flag incomplete connections as illustrations. These are inferred structural relationships, not turn-by-turn instructions or survey-grade engineering data. The map and code-native SVG diagrams use the same enriched geometry and colours.
+
+Regenerate in this order (Node 24 for the final step):
 
 ```sh
+python3 scripts/prepare-data.py
 python3 scripts/prepare-structures.py
 python3 scripts/prepare-interchanges.py
+python3 scripts/prepare-connections.py
 python3 scripts/prepare-places.py
+node scripts/prepare-diagrams.mjs
 ```
 
-Raw interchange ways are retained in `scripts/interchanges-ways.json`, retrieved from the public Overpass API on 2026-11-22. The same ODbL attribution applies to derived geometry and diagrams.
+Raw interchange ways are retained in `scripts/interchanges-ways.json`, retrieved from Overpass on 2026-11-22. The same ODbL attribution applies to derived geometry and diagrams. Further official route context: [Transport Department — Driving along Tsing Sha Highway](https://www.td.gov.hk/tc/publications_and_press_releases/publications/free_publications/driving_along_tsing_sha_highway/index.html), [Highways Department — New Territories roads](https://www.hyd.gov.hk/tc/road_and_railway/road_network/new.html).

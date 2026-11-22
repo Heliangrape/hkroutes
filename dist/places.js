@@ -7,8 +7,8 @@ export function createPlaceLabels(map,places,getContext){
   return {place,el};
  });
  function refresh(){
-  const state=getContext(),focus=state.view==='focus'&&state.mode==='routes';
-  const candidates=labels.filter(({place})=>focus?place.routes.includes(state.route):state.view==='browse'&&place.browse);
+  const state=getContext(),focus=state.view==='route';
+  const candidates=labels.filter(({place})=>focus?place.routes.includes(state.route):state.view==='overview'&&place.browse);
   const selected=new Set(candidates);for(const label of labels)if(!selected.has(label))label.el.hidden=true;
   const rectangles=[],width=map.getContainer().clientWidth,height=map.getContainer().clientHeight-(state.blockedBottom||0);
   const rank={area:4,water:3,land:2,region:1};
