@@ -20,14 +20,16 @@ Open http://127.0.0.1:4173. The basemap and optional web font require network ac
 
 The map is one continuous overview-to-detail experience, with no separate route or infrastructure tabs.
 
-- Start in a full-screen Hong Kong overview. Geographical names and route numbers are quiet text, with no number badges or control panels.
+- Start with a Hong Kong overview and soft, route-coloured traffic. The map retains its coastlines, green areas, local roads and buildings. A small fixed header offers whole-network reset and one unified search; no route-number badges or mode tabs.
+- Zoom gradually from regional context to facility names, local streets and parks. At a useful scale, a bridge/tunnel/interchange near the viewport centre reveals a photo and principal measurement automatically. This preview never changes the selected route, camera, URL or panel expansion. Zooming out or panning away releases it; selecting it opens full details.
+- Search finds routes, places and facilities together, including common simplified Chinese names; `/` focuses search and Enter opens the first match.
 - Select a road or its number to focus the route. Along-route bridge, tunnel and interchange names are direct map links; zooming in reveals more names. The same items are available as plain text in the pull-up details.
 - Select a facility to enter its detail scene. Click an interchange ramp or mainline to isolate it and read its source road, destination road, direction and available lane/destination tags.
 - Tap empty space or Escape: facility → originating route → whole network. In the whole-network scene, empty space returns to the last visited route. On a first visit, select a route to start. Each scene retains its own camera, including manual pan/zoom.
 - The pull-up panel opens or closes only when the user drags or toggles its handle. Selecting another object preserves expansion; expanding changes visual center without changing zoom.
 - Facilities have one stable identity shared by all their parent routes. Each visit retains its originating route separately, including in shareable hash links.
 - Bridges and tunnels show their route number, neighbouring route destinations and a principal measurement on the map, with photos, parameters and source credits in the pull-up.
-- Traffic is an illustrative effect, not live traffic data. Animation honours reduced-motion preferences and pauses in background tabs. Construction segments carry no traffic animation.
+- Whole-network traffic is balanced across mapped route numbers and retains each route colour. Traffic is an illustrative effect, not live traffic data. Animation honours reduced-motion preferences and pauses in background tabs. Construction segments carry no traffic animation.
 
 Run regression checks with `node --test tests/*.test.mjs`.
 
@@ -79,6 +81,7 @@ python3 scripts/prepare-structures.py
 python3 scripts/prepare-interchanges.py
 python3 scripts/prepare-connections.py
 python3 scripts/prepare-places.py
+python3 scripts/prepare-context-map.py
 node scripts/prepare-diagrams.mjs
 ```
 

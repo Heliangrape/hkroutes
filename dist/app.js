@@ -1,21 +1,22 @@
 import {createSheet} from './sheet.js';
 import {fitZoom} from './camera.js';
 import {facilityFeatures,createTraffic} from './traffic.js';
+import {mapDetailLevel,nearbyFacility,searchEntries} from './discovery.js';
 import {createPlaceLabels} from './places.js';
 import {openRoute,openDetail,emptyMap,sceneHash,parseScene} from './scene.js';
 import {colorConnections,rampLabel,movementKey,midpoint} from './connections.js';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const kinds={bridge:{name:'橋梁',color:'#6cbdf9'},tunnel:{name:'隧道',color:'#edb86b'},interchange:{name:'互通立交',color:'#c0ced8'}};
-const state={routes:[],geo:null,structures:[],interchanges:{features:[]},places:[],view:'overview',route:null,structure:null,lastRoute:null,movement:null,ready:false};
-let map,sheet,traffic,contextLabels,mapLabels,resizeFrame,toastTimer;
+const state={routes:[],geo:null,structures:[],interchanges:{features:[]},places:[],view:'overview',route:null,structure:null,lastRoute:null,movement:null,nearby:null,ready:false};
+let map,sheet,traffic,contextLabels,mapLabels,resizeFrame,toastTimer,mapClickTimer;
 const cameras=new Map(),reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const route=()=>state.routes.find(r=>r.id===state.route),structure=()=>state.structures.find(s=>s.id===state.structure);
 const collection=features=>({type:'FeatureCollection',features});
-const routeName=id=>`${id} 號幹線`;
+const facilityGeometry=new Map();
 function message(text,error=false){$('#map-message').textContent=text;$('#map-message').classList.toggle('error',error);$('#map-message').hidden=false;}
 function toast(text){$('.toast')?.remove();clearTimeout(toastTimer);const el=document.createElement('div');el.className='toast';el.setAttribute('role','status');el.textContent=text;$('.map-stage').append(el);toastTimer=setTimeout(()=>el.remove(),3000);}
-function padding(visible=sheet?.visibleHeight||0){return {top:0,bottom:state.view==='overview'?0:Math.min(visible+10,$('#map').clientHeight-1),left:0,right:0};}
-function syncOcclusion(visible){if(map&&state.ready){map.jumpTo({padding:padding(visible)});contextLabels?.refresh();mapLabels?.refresh();}}
+function padding(visible=sheet?.visibleHeight||0){return {top:65,bottom:state.view==='overview'?0:Math.min(visible+10,$('#map').clientHeight-1),left:0,right:0};}
+function syncOcclusion(visible){if(map&&state.ready){map.jumpTo({padding:padding(visible)});contextLabels?.refresh();mapLabels?.refresh();syncNearbyPosition();if(!sheet.animating)refreshNearby();}}
 function navigate(center,zoom,animate=true){if(map&&state.ready){cameras.set(cameraKey(),{center,zoom});map.easeTo({center,zoom,padding:padding(),bearing:0,pitch:0,duration:animate&&!reduced?650:0});}}
 function fit(id=null,animate=true){
  if(!state.ready)return;map.resize();
@@ -39,7 +40,10 @@ function back(){const next=emptyMap(state);if(next===state){toast('點選地圖�
 function routeLink(id){const r=state.routes.find(r=>r.id===id);return `<button class="text-route" data-route="${id}" style="--route:${r.color}">${id} 號幹線 <small>${esc(r.endpoints)}</small></button>`;}
 function render(){
  document.body.dataset.view=state.view;
+ clearNearby();
  const r=route(),s=structure();
+ $('#scene-caption').textContent=s?`${kinds[s.kind].name} · ${s.routes.join(' / ')} 號幹線`:r?`${r.id} 號幹線 · ${r.endpoints}`:'香港的道路與山海';
+ $('#home-view').setAttribute('aria-current',state.view==='overview'?'page':'false');
  $('#focus-label').textContent=s?s.name:r?`${r.id} 號幹線 · ${r.endpoints}`:'幹線圖誌';
  $('#panel-eyebrow').textContent=s?'DETAIL / '+kinds[s.kind].name:'HONG KONG ROUTE ATLAS';
  $('#panel-title').textContent=s?s.name:r?`${r.id} 號幹線`:'沿著道路探索香港';
@@ -74,13 +78,12 @@ function updateMap(){
  const selected=['==',['get','route'],state.route??-1];
  for(const layer of ['routes-line','routes-construction']){
   map.setPaintProperty(layer,'line-color',detail?'#45525d':focused?['case',selected,original,'#45525d']:original);
-  map.setPaintProperty(layer,'line-opacity',detail?.14:focused?['case',selected,1,.16]:.72);
+  map.setPaintProperty(layer,'line-opacity',detail?.3:focused?['case',selected,1,.35]:.82);
   map.setPaintProperty(layer,'line-width',['interpolate',['linear'],['zoom'],8,focused?['case',selected,2.2,1]:1.7,12,focused?['case',selected,4.2,1]:3,16,focused?['case',selected,7,1]:5]);
  }
  map.setPaintProperty('routes-casing','line-opacity',detail?.15:.6);
- map.setPaintProperty('scene-veil','fill-opacity',detail?.75:focused?.7:.48);
- // Our own DOM annotations stay readable without loading a crowded basemap label set.
- for(const l of map.getStyle().layers)if(l.type==='symbol')map.setLayoutProperty(l.id,'visibility','none');
+ map.setPaintProperty('scene-veil','fill-opacity',['interpolate',['linear'],['zoom'],9,detail?.45:focused?.3:.15,16,detail?.24:focused?.13:.06]);
+ // Native map labels supply streets, parks and neighbourhoods at their natural zoom levels.
  const features=s?facilityFeatures(state.geo.features,s,state.interchanges.features):[];
  map.getSource('facility').setData(collection(s?.kind==='interchange'?colorConnections(features):features));
  const color=s?kinds[s.kind].color:r?.color||'#87949f';
@@ -88,9 +91,14 @@ function updateMap(){
  map.setPaintProperty('facility-glow','line-opacity',s?.kind==='interchange'?.05:.24);
  for(const layer of ['facility-line','facility-glow','traffic-glow'])map.setPaintProperty(layer,'line-color',color);
  map.setFilter('route-glow',focused?selected:['==',['get','route'],-1]);map.setPaintProperty('route-glow','line-color',color);
- map.setPaintProperty('traffic-head','line-width',focused?1.95:1.5);
+ map.setPaintProperty('traffic-head','line-width',focused?1.8:detail?1.5:1.25);
+ map.setPaintProperty('traffic-head','line-opacity',['*',['get','alpha'],focused||detail?1:.7]);
+ map.setPaintProperty('traffic-glow','line-width',focused?6:detail?5:4);
+ map.setPaintProperty('traffic-glow','line-color',focused||detail?color:['get','color']);
  applyMovement();contextLabels?.refresh();mapLabels?.rebuild();
- if(focused||detail)traffic.start(s?features:state.geo.features.filter(f=>f.properties.route===state.route),{prominence:focused?1.35:1});else traffic.stop();
+ if(focused||detail)traffic.start(s?features:state.geo.features.filter(f=>f.properties.route===state.route),{prominence:focused?1.3:1});
+ else traffic.start(state.geo.features,{prominence:.85,density:.65,speed:.65,colors:Object.fromEntries(state.routes.map(r=>[r.id,r.color]))});
+ refreshNearby();
 }
 function addMapLayers(){
  map.addSource('scene',{type:'geojson',data:{type:'Feature',geometry:{type:'Polygon',coordinates:[[[-180,-85],[180,-85],[180,85],[-180,85],[-180,-85]]]}}});
@@ -101,6 +109,8 @@ function addMapLayers(){
  map.addLayer({id:'routes-line',type:'line',source:'hk-routes',filter:['!=',['get','status'],'construction'],layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#687873','line-width':width,'line-opacity':1}});
  map.addLayer({id:'routes-construction',type:'line',source:'hk-routes',filter:['==',['get','status'],'construction'],layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#687873','line-width':width,'line-dasharray':[2,2],'line-opacity':1}});
  map.addLayer({id:'routes-hit',type:'line',source:'hk-routes',paint:{'line-color':'#fff','line-width':18,'line-opacity':0}});
+ map.addSource('nearby',{type:'geojson',data:collection([])});
+ map.addLayer({id:'nearby-line',type:'line',source:'nearby',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':['get','lineColor'],'line-width':4.5,'line-opacity':.8}});
  map.addSource('facility',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
  map.addLayer({id:'route-glow',type:'line',source:'hk-routes',filter:['==',['get','route'],-1],layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#7aafff','line-width':['interpolate',['linear'],['zoom'],9,10,14,24],'line-blur':8,'line-opacity':.18}},'routes-line');
  map.addLayer({id:'facility-glow',type:'line',source:'facility',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#6cbdf9','line-width':22,'line-blur':10,'line-opacity':.24}});
@@ -117,7 +127,7 @@ function addMapLayers(){
  map.addLayer({id:'traffic-glow',type:'line',source:'traffic',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#7aafff','line-width':6,'line-blur':3,'line-opacity':['*',['get','alpha'],.55]}});
  map.addLayer({id:'traffic-head',type:'line',source:'traffic',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':'#f4fcff','line-width':1.5,'line-opacity':['get','alpha']}});
  traffic=createTraffic(map,reduced);
- map.on('click',e=>{
+ function handleMapClick(e){
   if(state.view==='detail'){
    const fs=map.queryRenderedFeatures(e.point,{layers:['facility-hit']});
    if(fs.length){if(structure()?.kind==='interchange')selectMovement(fs[0].properties.movement);return;}
@@ -128,10 +138,15 @@ function addMapLayers(){
   const roads=map.queryRenderedFeatures(e.point,{layers:['routes-hit']});
   const chosen=roads.find(f=>Number(f.properties.route)===state.route)||roads[0];
   if(chosen){selectRoute(Number(chosen.properties.route));return;}back();
- });
+ }
+ map.on('click',e=>{clearTimeout(mapClickTimer);if(e.originalEvent?.detail>1)return;mapClickTimer=setTimeout(()=>handleMapClick(e),240);});
+ map.on('dblclick',()=>clearTimeout(mapClickTimer));
  map.on('mousemove',e=>{map.getCanvas().style.cursor=map.queryRenderedFeatures(e.point,{layers:state.view==='detail'?['facility-hit']:['routes-hit']}).length?'pointer':'';});
  contextLabels=createPlaceLabels(map,state.places,()=>({view:state.view,route:state.route,blockedBottom:sheet.visibleHeight+10}));
  mapLabels=createMapLabels();
+ map.on('movestart',()=>{clearTimeout(mapClickTimer);document.body.classList.add('camera-moving');});
+ map.on('moveend',()=>{document.body.classList.remove('camera-moving');refreshNearby();});
+ map.on('zoomend',()=>{contextLabels?.refresh();mapLabels?.rebuild();refreshNearby();});
 }
 function createMapLabels(){
  let labels=[];
@@ -145,7 +160,7 @@ function createMapLabels(){
   labels.forEach(l=>l.marker.remove());labels=[];
   if(state.view==='overview')state.routes.forEach(r=>add(String(r.id),positions[r.id],{className:'route-number',priority:6,click:()=>selectRoute(r.id)}));
   if(state.view==='route'||state.view==='overview'&&map.getZoom()>11.2){
-   state.structures.filter(s=>state.view==='overview'||s.routes.includes(state.route)).forEach(s=>add(s.name,s.coordinates,{className:`facility-name ${s.kind}`,priority:s.kind==='interchange'?4:3,click:()=>selectStructure(s.id),color:kinds[s.kind].color,offset:[0,-14]}));
+   state.structures.filter(s=>state.view==='overview'||s.routes.includes(state.route)||map.getZoom()>=12.4).forEach(s=>add(s.name,s.coordinates,{className:`facility-name ${s.kind} ${s.id===state.nearby?'in-view':''}`,priority:s.kind==='interchange'?4:3,click:()=>selectStructure(s.id),color:kinds[s.kind].color,offset:[0,-14]}));
   }
   const s=structure();
   if(s?.kind==='interchange'){
@@ -189,13 +204,13 @@ function createMapLabels(){
    const options=l.flexible?[l.offset,[0,23],[0,-42],[0,46],[0,-65],[0,68]]:[l.offset];let chosen=null,rect=null;
    for(const offset of options){
     const r={left:p.x-width/2+offset[0],right:p.x+width/2+offset[0],top:p.y-height/2+offset[1],bottom:p.y+height/2+offset[1]};
-    if(r.left>=8&&r.right<=w-8&&r.top>=12&&r.bottom<=h&&!rects.some(a=>r.left<a.right+8&&r.right>a.left-8&&r.top<a.bottom+5&&r.bottom>a.top-5)){chosen=offset;rect=r;break;}
+    if(r.left>=8&&r.right<=w-8&&r.top>=84&&r.bottom<=h&&!rects.some(a=>r.left<a.right+8&&r.right>a.left-8&&r.top<a.bottom+5&&r.bottom>a.top-5)){chosen=offset;rect=r;break;}
    }
    l.el.hidden=!chosen;if(chosen){rects.push(rect);l.marker.setOffset(chosen);}
 
   });
  }
- map.on('move',refresh);map.on('zoomend',()=>{if(state.view==='overview')rebuild();});map.on('resize',refresh);return {rebuild,refresh};
+ map.on('move',refresh);map.on('resize',refresh);return {rebuild,refresh};
 }
 async function initMap(){
  if(!window.maplibregl){message('地圖引擎載入失敗，請重新整理。',true);return;}
@@ -208,19 +223,66 @@ async function initMap(){
   setTimeout(()=>{if(!state.ready){message('底圖連線較慢，切換至簡潔路線圖…');map.setStyle({version:8,sources:{},layers:[{id:'background',type:'background',paint:{'background-color':'#08131d'}}]});}},18000);
  }catch(e){console.error(e);message('此瀏覽器無法啟用互動地圖，請使用支援 WebGL 的瀏覽器。',true);}
 }
+function clearNearby(){
+ state.nearby=null;$('#nearby-card').hidden=true;
+ if(map?.getSource('nearby'))map.getSource('nearby').setData(collection([]));
+}
+function syncNearbyPosition(){
+ const mobile=$('#map').clientWidth<=600;
+ $('#nearby-card').style.bottom=mobile?`${sheet.visibleHeight+(state.view==='overview'?20:25)}px`:'';
+}
+function refreshNearby(){
+ if(!state.ready||!map?.getSource('nearby'))return;
+ document.body.dataset.mapLevel=mapDetailLevel(map.getZoom());syncNearbyPosition();
+ const candidates=state.structures.map(s=>{
+  const p=map.project(s.coordinates),cs=(facilityGeometry.get(s.id)||[]).flatMap(f=>f.geometry.coordinates).map(c=>map.project(c));
+  const span=cs.length?Math.max(Math.max(...cs.map(c=>c.x))-Math.min(...cs.map(c=>c.x)),Math.max(...cs.map(c=>c.y))-Math.min(...cs.map(c=>c.y))):0;
+  return {id:s.id,kind:s.kind,x:p.x,y:p.y,span};
+ });
+ const id=nearbyFacility(candidates,{zoom:map.getZoom(),width:$('#map').clientWidth,height:$('#map').clientHeight,top:92,bottom:sheet.visibleHeight+10,current:state.nearby,view:state.view,blocked:sheet.expanded||$('#search-dialog').open});
+ if(id===state.nearby)return;
+ clearNearby();state.nearby=id;
+ if(id){
+  const s=state.structures.find(s=>s.id===id),k=kinds[s.kind];
+  $('#nearby-card').innerHTML=`<img src="./${s.image}" alt=""><span><small>視野內 · ${k.name}</small><strong>${esc(s.name)}</strong><span>${s.routes.join(' / ')} 號幹線 · ${esc(s.metrics[0][0])} ${esc(s.metrics[0][1])}</span><em>點開，看看這裡</em></span>`;
+  $('#nearby-card').setAttribute('aria-label',`查看${s.name}的照片與詳情`);$('#nearby-card').hidden=false;
+  const fs=facilityGeometry.get(id)||[];
+  map.getSource('nearby').setData(collection(s.kind==='interchange'?colorConnections(fs):fs.map(f=>({...f,properties:{...f.properties,lineColor:k.color}}))));
+ }
+ mapLabels?.rebuild();
+}
+function openSearch(){
+ if(!state.routes.length){toast('資料仍在載入');return;}
+ clearNearby();$('#search-dialog').showModal();renderSearch();$('#atlas-search').focus();
+}
+function renderSearch(){
+ const rows=searchEntries($('#atlas-search').value,state.routes,state.structures);
+ $('#search-results').innerHTML=rows.length?rows.map(r=>`<button data-search-type="${r.type}" data-id="${r.id}" style="--result-color:${r.color||'#8faabd'}"><strong>${esc(r.name)}</strong><small>${esc(r.sub)}</small></button>`).join(''):'<p>沒有相符的地點，試試「青馬」、「8」或「隧道」。</p>';
+}
 function bind(){
  sheet=createSheet({element:$('#explorer'),handle:$('#sheet-grip'),dragZone:$('#sheet-drag-zone'),content:$('#panel-body'),onChange:syncOcclusion,isHidden:()=>state.view==='overview'});
  $('#explorer').addEventListener('click',e=>{
   const r=e.target.closest('[data-route]'),s=e.target.closest('[data-structure]'),n=e.target.closest('[data-node]');
   if(r)selectRoute(Number(r.dataset.route));else if(s)selectStructure(s.dataset.structure);else if(n){const point=route()?.nodes[Number(n.dataset.node)],f=state.structures.find(s=>s.name===point?.name);if(f)selectStructure(f.id);else if(point){navigate(point.coordinates,13);toast(point.name);}}
  });
- document.addEventListener('keydown',e=>{if(e.key==='Escape')back();});
+ $('#home-view').addEventListener('click',()=>{
+  if(!state.ready)return;remember();Object.assign(state,{view:'overview',route:null,structure:null,movement:null});render();history.replaceState(null,'',location.pathname+location.search+'#overview=1');fit();
+ });
+ $('#open-search').addEventListener('click',openSearch);$('#close-search').addEventListener('click',()=>$('#search-dialog').close());
+ $('#atlas-search').addEventListener('input',renderSearch);
+ $('#atlas-search').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#search-results button')?.click();}});
+ $('#search-results').addEventListener('click',e=>{const b=e.target.closest('[data-search-type]');if(!b)return;$('#search-dialog').close();if(b.dataset.searchType==='route')selectRoute(Number(b.dataset.id));else selectStructure(b.dataset.id);});
+ $('#search-dialog').addEventListener('close',refreshNearby);
+ $('#search-dialog').addEventListener('click',e=>{const r=$('#search-dialog').getBoundingClientRect();if(e.target===$('#search-dialog')&&(e.clientY<r.top||e.clientY>r.bottom||e.clientX<r.left||e.clientX>r.right))$('#search-dialog').close();});
+ $('#nearby-card').addEventListener('click',()=>{if(state.nearby)selectStructure(state.nearby);});
+ document.addEventListener('keydown',e=>{if($('#search-dialog').open)return;if(e.key==='Escape')back();if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();openSearch();}});
  window.addEventListener('hashchange',()=>{remember();Object.assign(state,parseScene(location.hash,state.routes,state.structures));render();moveToScene({restore:true});});
 }
 async function main(){
  bind();try{
   const load=async url=>{const r=await fetch(url);if(!r.ok)throw Error(url);return r.json();};
   const [r,g,s,j,p]=await Promise.all(['routes.json','routes.geojson','structures.json','interchanges.geojson','places.json'].map(f=>load('./data/'+f)));
+  for(const f of s.structures)facilityGeometry.set(f.id,facilityFeatures(g.features,f,j.features));
   Object.assign(state,{routes:r.routes,geo:g,structures:s.structures,interchanges:j,places:p.places},parseScene(location.hash,r.routes,s.structures));render();await initMap();
  }catch(e){console.error(e);message('資料載入失敗，請重新整理後再試。',true);}
 }

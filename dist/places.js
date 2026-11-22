@@ -8,14 +8,14 @@ export function createPlaceLabels(map,places,getContext){
  });
  function refresh(){
   const state=getContext(),focus=state.view==='route';
-  const candidates=labels.filter(({place})=>focus?place.routes.includes(state.route):state.view==='overview'&&place.browse);
+  const candidates=labels.filter(({place})=>map.getZoom()<12.25&&(focus?place.routes.includes(state.route):state.view==='overview'&&place.browse));
   const selected=new Set(candidates);for(const label of labels)if(!selected.has(label))label.el.hidden=true;
   const rectangles=[],width=map.getContainer().clientWidth,height=map.getContainer().clientHeight-(state.blockedBottom||0);
   const rank={area:4,water:3,land:2,region:1};
   candidates.sort((a,b)=>rank[b.place.kind]-rank[a.place.kind]).forEach(({place,el})=>{
    const p=map.project(place.coordinates),w=place.name.length*12+18,h=25;
    const r={left:p.x-w/2,right:p.x+w/2,top:p.y-h/2+9,bottom:p.y+h/2+9};
-   const outside=r.left<6||r.right>width-6||r.top<18||r.bottom>height-8;
+   const outside=r.left<6||r.right>width-6||r.top<90||r.bottom>height-8;
    const overlap=rectangles.some(a=>r.left<a.right+11&&r.right>a.left-11&&r.top<a.bottom+10&&r.bottom>a.top-10);
    el.hidden=outside||overlap;if(!el.hidden)rectangles.push(r);
   });
