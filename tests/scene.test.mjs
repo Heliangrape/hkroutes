@@ -7,10 +7,10 @@ const routes=JSON.parse(fs.readFileSync(new URL('../dist/data/routes.json',impor
 const structures=JSON.parse(fs.readFileSync(new URL('../dist/data/structures.json',import.meta.url))).structures;
 const all=JSON.parse(fs.readFileSync(new URL('../dist/data/interchanges.geojson',import.meta.url))).features;
 const initial=parseScene('',routes,structures);
-test('Blank space toggles whole-network and the last visited route',()=>{
+test('Blank space returns to overview and never reopens a hidden selection',()=>{
  assert.equal(initial.view,'overview');assert.equal(emptyMap(initial),initial);
  const r=openRoute(initial,8),o=emptyMap(r);assert.equal(o.view,'overview');assert.equal(o.route,null);
- assert.deepEqual(emptyMap(o),r);
+ assert.equal(emptyMap(o),o);
 });
 test('A shared interchange returns to the route from which this visit started',()=>{
  const facility=structures.find(s=>s.id==='23');
@@ -45,7 +45,7 @@ test('Interchange mainlines retain their own route colours, and connecting ramps
 });
 test('Ramp metadata distinguishes local roads and retains OSM direction, identity and uncertainty',()=>{
  const ramp=all.filter(f=>f.properties.role==='ramp');assert.ok(ramp.some(f=>!f.properties.fromRoutes.length||!f.properties.toRoutes.length));
- for(const f of ramp){const p=f.properties;assert.ok(p.direction);assert.ok(p.fromName);assert.ok(p.toName);assert.equal(typeof p.connectionConfirmed,'boolean');assert.match(movementKey(p),/^2[234]:\d+$/);}
+ for(const f of ramp){const p=f.properties;assert.ok(p.direction);assert.ok(p.fromName);assert.ok(p.toName);assert.equal(typeof p.connectionConfirmed,'boolean');assert.match(movementKey(p),/^2[2-7]:\d+$/);}
 });
 test('One physical ramp movement retains all of its split way segments',()=>{
  const groups=new Map();

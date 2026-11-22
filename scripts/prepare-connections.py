@@ -65,7 +65,7 @@ for f in data['features']:
   p1.update(rampStart=(fd+best[1])/total,rampEnd=min(1,(fd+best[1]+length)/total))
  else:p1.update(fromRoutes=refs(t),toRoutes=refs(t),fromName=name(t),toName=name(t),connectionConfirmed=True)
 # Join split OSM ramp ways into one physical movement, using shared nodes only.
-for sid in ['22','23','24']:
+for sid in sorted({f['properties']['structure'] for f in data['features']}):
  ramps=[f for f in data['features'] if f['properties']['structure']==sid and f['properties']['role']=='ramp']
  parent={f['properties']['osmId']:f['properties']['osmId'] for f in ramps}
  def find(x):
@@ -96,6 +96,6 @@ for f in data['features']:
  p1=f['properties'];p1['startColor']=color(p1['fromRoutes']);p1['endColor']=color(p1['toRoutes']);p1['lineColor']=colors.get(p1['route'],'#87949f')
 p.write_text(json.dumps(data,ensure_ascii=False,separators=(',',':')))
 print('Enriched',len(data['features']),'segments')
-for sid in ['22','23','24']:
+for sid in sorted({f['properties']['structure'] for f in data['features']}):
  fs=[f for f in data['features'] if f['properties']['structure']==sid and f['properties']['role']=='ramp']
  print(sid,collections.Counter((tuple(f['properties']['fromRoutes']),tuple(f['properties']['toRoutes'])) for f in fs))

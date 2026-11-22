@@ -4,7 +4,7 @@ export function openDetail(scene,facility){const context=facility.routes.include
 export function emptyMap(scene){
  if(scene.view==='detail')return scene.route?openRoute(scene,scene.route):{...scene,view:'overview',structure:null,movement:null};
  if(scene.view==='route')return {...scene,view:'overview',route:null,structure:null,movement:null};
- return scene.lastRoute?openRoute(scene,scene.lastRoute):scene;
+ return scene;
 }
 export function sceneHash(s){return s.view==='detail'?`#structure=${s.structure}${s.route?`&route=${s.route}`:''}`:s.view==='route'?`#route=${s.route}`:'#overview=1';}
 export function parseScene(hash,routes,structures){

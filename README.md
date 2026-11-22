@@ -21,11 +21,11 @@ Open http://127.0.0.1:4173. The basemap and optional web font require network ac
 The map is one continuous overview-to-detail experience, with no separate route or infrastructure tabs.
 
 - Start with a Hong Kong overview and soft, route-coloured traffic. The map retains its coastlines, green areas, local roads and buildings. A small fixed header offers whole-network reset and one unified search; no route-number badges or mode tabs.
-- Zoom gradually from regional context to facility names, local streets and parks. At a useful scale, a bridge/tunnel/interchange near the viewport centre reveals a photo and principal measurement automatically. This preview never changes the selected route, camera, URL or panel expansion. Zooming out or panning away releases it; selecting it opens full details.
+- Zoom gradually from regional context to facility names, local streets and parks. Bridge and tunnel names become compact text buttons at close zoom, without an automatic photo card or highlight. Route scenes only offer their own facilities. Near a complex interchange or road bridge, zooming to a useful close-up scale adds a structural overlay and vertical layer selector in place; no camera, selected route, URL or panel expansion changes. Zooming out or panning away releases it.
 - Search finds routes, places and facilities together, including common simplified Chinese names; `/` focuses search and Enter opens the first match.
 - Select a road or its number to focus the route. Along-route bridge, tunnel and interchange names are direct map links; zooming in reveals more names. The same items are available as plain text in the pull-up details.
 - Select a facility to enter its detail scene. Click an interchange ramp or mainline to isolate it and read its source road, destination road, direction and available lane/destination tags.
-- Tap empty space or Escape: facility → originating route → whole network. In the whole-network scene, empty space returns to the last visited route. On a first visit, select a route to start. Each scene retains its own camera, including manual pan/zoom.
+- Tap empty space, Return or Escape: a structural overlay closes in place; explicit facility details return to the actual entry scene and camera; a selected route returns to the preceding whole-network camera. Empty space in the whole-network view is a no-op. Explicit selections fit their target once. Gesture starts cancel pending clicks, and road taps resolve the nearest physical line before their delay, avoiding stale screen-coordinate queries. Double-taps, drags and pinch gestures do not also select roads.
 - The pull-up panel opens or closes only when the user drags or toggles its handle. Selecting another object preserves expansion; expanding changes visual center without changing zoom.
 - Facilities have one stable identity shared by all their parent routes. Each visit retains its originating route separately, including in shareable hash links.
 - Bridges and tunnels show their route number, neighbouring route destinations and a principal measurement on the map, with photos, parameters and source credits in the pull-up.
@@ -69,7 +69,7 @@ Photos are sourced from the Hong Kong Transport Department, Information Services
 
 Route focus uses light trails with quiet settlement and geographical labels from `dist/data/places.json`. Facility focus replaces these labels with road and connection annotations, using collision avoidance adapted to the current viewport.
 
-Three interchange pilot scenes use actual clipped OpenStreetMap geometry: North West Tsing Yi, Lai Wan and Butterfly Valley. Mainlines retain their strategic route colour. Ramps transition from the source route colour to the destination route colour; grey represents local/un-numbered or unresolved roads. Road layer ordering supplies dark edges at crossings.
+Six interchange scenes use actual clipped OpenStreetMap geometry: North West Tsing Yi, Lai Wan, Butterfly Valley, Mei Foo, Kwai Chung and Tai Wo Ping. Mainlines retain their strategic route colour. Ramps transition from the source route colour to the destination route colour; grey represents local/un-numbered or unresolved roads. Road layer ordering supplies dark edges at crossings.
 
 `scripts/prepare-connections.py` derives movements by traversing shared OSM nodes in the legal way direction, stopping at a non-link road. Lines crossing without a shared node do not connect. Upstream/downstream ramp distances maintain colour progress along split ways. Each feature retains OSM way identity, source/destination references and road names, geographic direction, available lane/destination tags, and whether its terminals were resolved. Labels flag incomplete connections as illustrations. These are inferred structural relationships, not turn-by-turn instructions or survey-grade engineering data. The map and code-native SVG diagrams use the same enriched geometry and colours.
 
@@ -80,9 +80,18 @@ python3 scripts/prepare-data.py
 python3 scripts/prepare-structures.py
 python3 scripts/prepare-interchanges.py
 python3 scripts/prepare-connections.py
+python3 scripts/prepare-bridge-decks.py
 python3 scripts/prepare-places.py
 python3 scripts/prepare-context-map.py
 node scripts/prepare-diagrams.mjs
 ```
 
 Raw interchange ways are retained in `scripts/interchanges-ways.json`, retrieved from Overpass on 2026-11-22. The same ODbL attribution applies to derived geometry and diagrams. Further official route context: [Transport Department — Driving along Tsing Sha Highway](https://www.td.gov.hk/tc/publications_and_press_releases/publications/free_publications/driving_along_tsing_sha_highway/index.html), [Highways Department — New Territories roads](https://www.hyd.gov.hk/tc/road_and_railway/road_network/new.html).
+
+## Structure layers and navigation limits
+
+Each interchange has an overview and 2–4 disjoint groups: mainlines plus ramps split by relative OSM layer order. Inactive groups remain faint as context. Choosing a group changes geometry emphasis, labels and traffic together, without changing the camera. Colour gradients retain movement identity across split OSM ways.
+
+Tsing Ma and Kap Shui Mun bridge road decks come from `scripts/bridge-decks-raw.json`, an Overpass snapshot on 2026-11-22. Only named road geometry is used; railway tracks are not invented. Upper decks show ordinary road traffic. Lower decks are marked conditional standby roads and carry no daily traffic effect. Operating context follows the [Transport Department control-area guide](https://www.td.gov.hk/tc/publications_and_press_releases/publications/free_publications/driving_in_the_tsing_ma_control_area/index.html); engineering context: [Highways Department Tsing Ma factsheet](https://www.hyd.gov.hk/tc/information_corner/hyd_factsheets/doc/C_Tsing_Ma_Bridge.pdf). The same ODbL terms apply to derived deck geometry.
+
+The map is constrained to Hong Kong and a limited geographic margin (113.72–114.50 E, 22.08–22.67 N), zoom 9–18. Mouse, touch and keyboard rotation are disabled; pitch stays at zero while pinch zoom remains available.

@@ -1,11 +1,14 @@
-"""Clip actual motorway/trunk/primary ramp geometry into three editorial interchange views."""
+"""Clip actual motorway/trunk/primary ramp geometry into six editorial interchange views."""
 import json,pathlib,math,html,collections
 ROOT=pathlib.Path(__file__).resolve().parent.parent
 raw=json.loads((ROOT/'scripts/interchanges-ways.json').read_text())['elements']
 sites=[
  dict(id='22',name='青衣西北交匯處',english='North West Tsing Yi Interchange',routes=[3,8],coordinates=[114.0841,22.3545],bbox=[114.0782,22.3498,114.0900,22.3610],location='青衣西北',roads='青嶼幹線 · 汀九橋 · 長青公路',summary='3號與8號幹線在青衣西北角銜接。跨海主線、迴轉匝道與往九龍方向的分支在狹長山坡間分層展開。',source='https://www.info.gov.hk/gia/general/199804/27/0427112.htm'),
  dict(id='23',name='荔灣交匯處',english='Lai Wan Interchange',routes=[3,8],coordinates=[114.1450,22.3320],bbox=[114.1380,22.3274,114.1510,22.3362],location='荔枝角灣',roads='西九龍公路 · 青沙公路 · 連翔道',summary='青沙公路在西九龍公路旁分岔和匯入，長彎匝道穿過市區高架路網。這裡展示主線與多條方向性連接路的上下穿關係。',source='https://www.legco.gov.hk/yr10-11/chinese/brief/ssc10_20110923-c.pdf'),
- dict(id='24',name='蝴蝶谷交匯處',english='Butterfly Valley Interchange',routes=[7,8],coordinates=[114.1415,22.3411],bbox=[114.1374,22.3380,114.1467,22.3442],location='蝴蝶谷',roads='青沙公路 · 呈祥道 · 青山公路',summary='7號與8號幹線在蝴蝶谷一帶銜接。高架青沙公路、呈祥道與地區道路的轉向匝道，在山谷入口形成緊湊的分層路網。',source='https://www.tpb.gov.hk/uploads/page/meetings/MPC/A_K16_44/A_K16_44_Appendix.pdf')]
+ dict(id='24',name='蝴蝶谷交匯處',english='Butterfly Valley Interchange',routes=[7,8],coordinates=[114.1415,22.3411],bbox=[114.1374,22.3380,114.1467,22.3442],location='蝴蝶谷',roads='青沙公路 · 呈祥道 · 青山公路',summary='7號與8號幹線在蝴蝶谷一帶銜接。高架青沙公路、呈祥道與地區道路的轉向匝道，在山谷入口形成緊湊的分層路網。',source='https://www.tpb.gov.hk/uploads/page/meetings/MPC/A_K16_44/A_K16_44_Appendix.pdf'),
+ dict(id='25',name='美孚交匯處',english='Mei Foo Interchange',routes=[3,5],coordinates=[114.1382,22.3338],bbox=[114.1305,22.3299,114.1462,22.3380],location='美孚',roads='青葵公路 · 西九龍公路 · 葵涌道',summary='美孚一帶的主線與長彎匝道把青葵公路、西九龍公路及葵涌道周邊道路連起來。主線高架與地面銜接路交錯，可逐組查看轉接匝道。',source='https://www.info.gov.hk/gia/general/dib/P19970528c.htm'),
+ dict(id='26',name='葵涌交匯處',english='Kwai Chung Interchange',routes=[5,7],coordinates=[114.1331,22.3399],bbox=[114.1287,22.3363,114.1384,22.3444],location='葵涌',roads='葵涌道 · 呈祥道 · 荔景山路',summary='葵涌道、呈祥道及荔景山路的轉接道路在此交錯。高架路旁的多條匝道服務不同方向，可把主線與相對較低、較高的轉向路分開閱讀。',source='https://www.td.gov.hk/tc/transport_in_hong_kong/hk_strategic_route_and_exit_number_system/map/r7/index.html'),
+ dict(id='27',name='大窩坪交匯處',english='Tai Wo Ping Interchange',routes=[7],coordinates=[114.1569,22.3429],bbox=[114.1528,22.3400,114.1617,22.3460],location='大窩坪',roads='呈祥道 · 龍翔道 · 大埔道',summary='呈祥道與龍翔道在大窩坪銜接，大埔道的地區交通透過彎曲匝道進出幹線。這個較緊湊的節點適合查看主線與匝道的上下穿關係。',source='https://www.legco.gov.hk/yr00-01/chinese/panels/tp/papers/c482-01.pdf')]
 colors={-2:'#536570',-1:'#657a86',0:'#7f929e',1:'#9bafbc',2:'#b2c4cf',3:'#c9d8df',4:'#dce7eb',5:'#eef5f6'}
 def clip(a,b,box):
  xmin,ymin,xmax,ymax=box;dx=b[0]-a[0];dy=b[1]-a[1];lo=0;hi=1

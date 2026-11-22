@@ -1,28 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nearbyFacility,mapDetailLevel,searchEntries} from '../dist/discovery.js';
+import {mapDetailLevel,searchEntries} from '../dist/discovery.js';
 import {buildTracks,trafficFrame} from '../dist/traffic.js';
 const read=f=>JSON.parse(fs.readFileSync(new URL('../dist/data/'+f,import.meta.url)));
 const routes=read('routes.json').routes,structures=read('structures.json').structures,roads=read('routes.geojson').features;
-const viewport={zoom:13,width:1000,height:800};
-const bridge={id:'1',kind:'bridge',x:500,y:430,span:160};
-test('Automatic information appears for a visible structure at a useful scale, without selecting a scene',()=>{
- assert.equal(nearbyFacility([bridge],viewport),'1');
- assert.equal(nearbyFacility([bridge],{...viewport,zoom:11}),null);
- assert.equal(nearbyFacility([{...bridge,span:10}],viewport),null);
- assert.equal(nearbyFacility([{...bridge,x:-10}],viewport),null);
- assert.equal(nearbyFacility([bridge],{...viewport,blocked:true}),null);
- assert.equal(nearbyFacility([bridge],{...viewport,view:'detail'}),null);
- assert.equal(nearbyFacility([{...bridge,y:600}],{...viewport,bottom:260}),null);
-});
-test('Nearby information stays stable for small changes, then releases on zoom out',()=>{
- assert.equal(nearbyFacility([bridge],{...viewport,zoom:12,current:'1'}),'1');
- assert.equal(nearbyFacility([bridge],{...viewport,zoom:11.8,current:'1'}),null);
- assert.equal(nearbyFacility([bridge,{...bridge,id:'2',x:490}],{...viewport,current:'1'}),'1');
- assert.equal(nearbyFacility([{...bridge,kind:'interchange'}],{...viewport,zoom:12.5}),null);
- assert.deepEqual([10,11.5,13,15].map(mapDetailLevel),['network','places','structures','streets']);
-});
 test('One search finds roads, facilities, route parents and simplified Chinese names',()=>{
  assert.equal(searchEntries('青马',routes,structures)[0].name,'青馬大橋');
  assert.ok(searchEntries('桥',routes,structures).some(r=>r.name==='青馬大橋'));

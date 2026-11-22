@@ -32,7 +32,10 @@
       "imageSource": "https://www.td.gov.hk/filemanager/en/content_5011/new_photo/tsing_ma_bridge.jpg",
       "imageCredit": "香港運輸署",
       "imageCaption": "青馬大橋實景",
-      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html"
+      "source": "https://www.td.gov.hk/en/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index_t.html",
+      "complex": true,
+      "deckSource": "https://www.td.gov.hk/tc/publications_and_press_releases/publications/free_publications/driving_in_the_tsing_ma_control_area/index.html",
+      "deckNote": "上層為日常主橋道路；下層為有蓋備用通道，受交通管理安排限制，並非日常開放。此處僅展示道路，未繪製鐵路。"
     },
     {
       "id": "2",
@@ -65,7 +68,10 @@
       "imageSource": "https://fpf.ccidahk.gov.hk/common/images/location/01533/01533d.jpg",
       "imageCredit": "香港文創產業發展處・電影服務統籌科",
       "imageCaption": "汲水門大橋近景與青嶼幹線",
-      "source": "https://www.hyd.gov.hk/en/information_corner/hyd_factsheets/doc/e_Kap_Shui_Mun_Bridge.pdf"
+      "source": "https://www.hyd.gov.hk/en/information_corner/hyd_factsheets/doc/e_Kap_Shui_Mun_Bridge.pdf",
+      "complex": true,
+      "deckSource": "https://www.td.gov.hk/tc/publications_and_press_releases/publications/free_publications/driving_in_the_tsing_ma_control_area/index.html",
+      "deckNote": "上層為日常主橋道路；下層為有蓋備用通道，受交通管理安排限制，並非日常開放。此處僅展示道路，未繪製鐵路。"
     },
     {
       "id": "3",
@@ -819,6 +825,131 @@
       "imageSource": "https://www.openstreetmap.org/copyright",
       "imageCredit": "OpenStreetMap contributors · ODbL",
       "imageCaption": "蝴蝶谷交匯處連接結構示意（幹線原色與匝道漸變）"
+    },
+    {
+      "id": "25",
+      "name": "美孚交匯處",
+      "english": "Mei Foo Interchange",
+      "routes": [
+        3,
+        5
+      ],
+      "coordinates": [
+        114.1382,
+        22.3338
+      ],
+      "bbox": [
+        114.1305,
+        22.3299,
+        114.1462,
+        22.338
+      ],
+      "location": "美孚",
+      "roads": "青葵公路 · 西九龍公路 · 葵涌道",
+      "summary": "美孚一帶的主線與長彎匝道把青葵公路、西九龍公路及葵涌道周邊道路連起來。主線高架與地面銜接路交錯，可逐組查看轉接匝道。",
+      "source": "https://www.info.gov.hk/gia/general/dib/P19970528c.htm",
+      "kind": "interchange",
+      "metrics": [
+        [
+          "連接幹線",
+          "3 · 5 號"
+        ],
+        [
+          "所在區域",
+          "美孚"
+        ],
+        [
+          "主要銜接",
+          "青葵公路 · 西九龍公路 · 葵涌道"
+        ]
+      ],
+      "image": "media/interchange-25.svg",
+      "imageSource": "https://www.openstreetmap.org/copyright",
+      "imageCredit": "OpenStreetMap contributors · ODbL",
+      "imageCaption": "美孚交匯處連接結構示意（幹線原色與匝道漸變）"
+    },
+    {
+      "id": "26",
+      "name": "葵涌交匯處",
+      "english": "Kwai Chung Interchange",
+      "routes": [
+        5,
+        7
+      ],
+      "coordinates": [
+        114.1331,
+        22.3399
+      ],
+      "bbox": [
+        114.1287,
+        22.3363,
+        114.1384,
+        22.3444
+      ],
+      "location": "葵涌",
+      "roads": "葵涌道 · 呈祥道 · 荔景山路",
+      "summary": "葵涌道、呈祥道及荔景山路的轉接道路在此交錯。高架路旁的多條匝道服務不同方向，可把主線與相對較低、較高的轉向路分開閱讀。",
+      "source": "https://www.td.gov.hk/tc/transport_in_hong_kong/hk_strategic_route_and_exit_number_system/map/r7/index.html",
+      "kind": "interchange",
+      "metrics": [
+        [
+          "連接幹線",
+          "5 · 7 號"
+        ],
+        [
+          "所在區域",
+          "葵涌"
+        ],
+        [
+          "主要銜接",
+          "葵涌道 · 呈祥道 · 荔景山路"
+        ]
+      ],
+      "image": "media/interchange-26.svg",
+      "imageSource": "https://www.openstreetmap.org/copyright",
+      "imageCredit": "OpenStreetMap contributors · ODbL",
+      "imageCaption": "葵涌交匯處連接結構示意（幹線原色與匝道漸變）"
+    },
+    {
+      "id": "27",
+      "name": "大窩坪交匯處",
+      "english": "Tai Wo Ping Interchange",
+      "routes": [
+        7
+      ],
+      "coordinates": [
+        114.1569,
+        22.3429
+      ],
+      "bbox": [
+        114.1528,
+        22.34,
+        114.1617,
+        22.346
+      ],
+      "location": "大窩坪",
+      "roads": "呈祥道 · 龍翔道 · 大埔道",
+      "summary": "呈祥道與龍翔道在大窩坪銜接，大埔道的地區交通透過彎曲匝道進出幹線。這個較緊湊的節點適合查看主線與匝道的上下穿關係。",
+      "source": "https://www.legco.gov.hk/yr00-01/chinese/panels/tp/papers/c482-01.pdf",
+      "kind": "interchange",
+      "metrics": [
+        [
+          "連接幹線",
+          "7 號"
+        ],
+        [
+          "所在區域",
+          "大窩坪"
+        ],
+        [
+          "主要銜接",
+          "呈祥道 · 龍翔道 · 大埔道"
+        ]
+      ],
+      "image": "media/interchange-27.svg",
+      "imageSource": "https://www.openstreetmap.org/copyright",
+      "imageCredit": "OpenStreetMap contributors · ODbL",
+      "imageCaption": "大窩坪交匯處連接結構示意（幹線原色與匝道漸變）"
     }
   ]
 }
