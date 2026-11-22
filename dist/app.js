@@ -2,7 +2,7 @@ import {createSheet} from './sheet.js';
 import {fitZoom} from './camera.js';
 import {facilityFeatures,createTraffic} from './traffic.js';
 import {mapDetailLevel,searchEntries} from './discovery.js';
-import {structureGroups,inStructureGroup,automaticStructure,visibleFacility} from './layers.js';
+import {structureGroups,inStructureGroup,automaticStructure,visibleFacility,blocksStructureDiscovery} from './layers.js';
 import {MAP_LIMITS,pickRoad} from './interaction.js';
 import {createPlaceLabels} from './places.js';
 import {openRoute,openDetail,emptyMap,sceneHash,parseScene} from './scene.js';
@@ -291,7 +291,7 @@ async function initMap(){
 function refreshViewport(){
  if(!state.ready)return;document.body.dataset.mapLevel=mapDetailLevel(map.getZoom());
  if(state.view==='detail'||performance.now()<suppressAutoUntil)return;
- if(sheet.expanded||$('#search-dialog').open){if(state.autoStructure){clearAuto();updateMap();}return;}
+ if(blocksStructureDiscovery({view:state.view,panelExpanded:sheet.expanded,searchOpen:$('#search-dialog').open})){if(state.autoStructure){clearAuto();updateMap();}return;}
  const candidates=state.structures.filter(s=>s.kind==='interchange'||s.complex).map(s=>{
   const p=map.project(s.coordinates),cs=(facilityGeometry.get(s.id)||[]).flatMap(f=>f.geometry.coordinates).map(c=>map.project(c));
   const span=cs.length?Math.max(Math.max(...cs.map(c=>c.x))-Math.min(...cs.map(c=>c.x)),Math.max(...cs.map(c=>c.y))-Math.min(...cs.map(c=>c.y))):0;

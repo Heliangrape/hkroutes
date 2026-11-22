@@ -24,3 +24,5 @@ export function automaticStructure(candidates,{zoom,width,height,top=90,bottom=0
  eligible.sort((a,b)=>a.score-b.score);return eligible[0]?.id||null;
 }
 export function visibleFacility(facility,{view,route}){return view==='overview'||view==='route'&&facility.routes.includes(route);}
+
+export function blocksStructureDiscovery({view,panelExpanded=false,searchOpen=false}){return view==='detail'||searchOpen||(panelExpanded&&view!=='overview');}

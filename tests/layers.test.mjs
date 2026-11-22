@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {structureGroups,inStructureGroup,automaticStructure,visibleFacility} from '../dist/layers.js';
+import {structureGroups,inStructureGroup,automaticStructure,visibleFacility,blocksStructureDiscovery} from '../dist/layers.js';
 import {MAP_LIMITS,pickRoad} from '../dist/interaction.js';
 const read=f=>JSON.parse(fs.readFileSync(new URL('../dist/data/'+f,import.meta.url)));
 const structures=read('structures.json').structures,features=read('interchanges.geojson').features,decks=read('bridge-decks.geojson').features;
@@ -45,3 +45,5 @@ test('Map bounds cover the network and rotation/tilt are disabled by policy',()=
  const [[xmin,ymin],[xmax,ymax]]=MAP_LIMITS.maxBounds;
  assert.ok(read('routes.geojson').features.every(f=>f.geometry.coordinates.every(([x,y])=>x>=xmin&&x<=xmax&&y>=ymin&&y<=ymax)));
 });
+
+test('A hidden expanded panel cannot block close-up discovery in overview',()=>{assert.equal(blocksStructureDiscovery({view:'overview',panelExpanded:true}),false);assert.equal(blocksStructureDiscovery({view:'route',panelExpanded:true}),true);assert.equal(blocksStructureDiscovery({view:'overview',searchOpen:true}),true);});
