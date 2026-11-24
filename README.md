@@ -6,7 +6,7 @@ Live site: https://heliangrape.github.io/hkroutes/
 
 ## Deployment
 
-Push to `main` to publish `dist/` through the GitHub Pages workflow in `.github/workflows/pages.yml`. The workflow runs the existing regression checks before deployment. GitHub Pages uses GitHub Actions as its publishing source. All local asset URLs are relative so the site works under `/hkroutes/`.
+Push to `main` to publish `dist/` through the GitHub Pages workflow in `.github/workflows/pages.yml`. The workflow runs regression checks once before deployment; local edits use one focused verification pass. GitHub Pages uses GitHub Actions as its publishing source. All local asset URLs are relative so the site works under `/hkroutes/`.
 
 ## Run locally
 
@@ -24,6 +24,9 @@ The map is one continuous overview-to-detail experience, with no separate route 
 - Zoom gradually from regional context to facility names, local streets and parks. Bridge and tunnel names become compact text buttons at close zoom, without an automatic photo card or highlight. Route scenes only offer their own facilities. Near a complex interchange or road bridge, zooming to a useful close-up scale adds a structural overlay and vertical layer selector in place; no camera, selected route, URL or panel expansion changes. Zooming out or panning away releases it.
 - Search finds routes, places and facilities together, including common simplified Chinese names; `/` focuses search and Enter opens the first match.
 - Select a road or its number to focus the route. Along-route bridge, tunnel and interchange names are direct map links; zooming in reveals more names. The same items are available as plain text in the pull-up details.
+- Open an interchange or complex bridge with a button to play its directional growth sequence. Mainline directions appear first, followed by batches of 1–4 ramp paths. Names briefly highlight after each connection. The layer menu expands as groups finish; Skip or any camera gesture restores immediate control. Direct zoom discovery and initial deep links remain static.
+- Choose a structural layer to retain all earlier groups and animate the new group joining them. Overview shows the complete structure; Replay restarts its explanation.
+- The whole-network button plays a slow-to-fast, interruptible opening-era sequence. OSM way dates are retained on individual road features, rather than assigning a whole modern route the age of one tunnel. Undated and construction features are filled in last. This is a dated narrative on current geometry, not an engineering reconstruction. Initial page load retains its ordinary traffic presentation.
 - Select a facility to enter its detail scene. Click an interchange ramp or mainline to isolate it and read its source road, destination road, direction and available lane/destination tags.
 - Tap empty space, Return or Escape: a structural overlay closes in place; explicit facility details return to the actual entry scene and camera; a selected route returns to the preceding whole-network camera. Empty space in the whole-network view is a no-op. Explicit selections fit their target once. Gesture starts cancel pending clicks, and road taps resolve the nearest physical line before their delay, avoiding stale screen-coordinate queries. Double-taps, drags and pinch gestures do not also select roads.
 - The pull-up panel opens or closes only when the user drags or toggles its handle. Selecting another object preserves expansion; expanding changes visual center without changing zoom.
@@ -77,6 +80,7 @@ Regenerate in this order (Node 24 for the final step):
 
 ```sh
 python3 scripts/prepare-data.py
+python3 scripts/prepare-growth-history.py
 python3 scripts/prepare-structures.py
 python3 scripts/prepare-interchanges.py
 python3 scripts/prepare-connections.py
@@ -90,8 +94,14 @@ Raw interchange ways are retained in `scripts/interchanges-ways.json`, retrieved
 
 ## Structure layers and navigation limits
 
-Each interchange has an overview and 2–4 disjoint groups: mainlines plus ramps split by relative OSM layer order. Inactive groups remain faint as context. Choosing a group changes geometry emphasis, labels and traffic together, without changing the camera. Colour gradients retain movement identity across split OSM ways.
+Each interchange has an overview and 2–4 structural groups: mainlines plus ramps split by relative OSM layer order. A selected group includes all previous groups; only its newly added paths grow. Inactive future groups remain faint as context after playback. The complete parent routes retain their colour beyond the interchange footprint. Choosing a group changes geometry emphasis, labels and traffic together, without changing the camera. Colour gradients retain movement identity across split OSM ways.
 
 Tsing Ma and Kap Shui Mun bridge road decks come from `scripts/bridge-decks-raw.json`, an Overpass snapshot on 2026-11-22. Only named road geometry is used; railway tracks are not invented. Upper decks show ordinary road traffic. Lower decks are marked conditional standby roads and carry no daily traffic effect. Operating context follows the [Transport Department control-area guide](https://www.td.gov.hk/tc/publications_and_press_releases/publications/free_publications/driving_in_the_tsing_ma_control_area/index.html); engineering context: [Highways Department Tsing Ma factsheet](https://www.hyd.gov.hk/tc/information_corner/hyd_factsheets/doc/C_Tsing_Ma_Bridge.pdf). The same ODbL terms apply to derived deck geometry.
 
 The map is constrained to Hong Kong and a limited geographic margin (113.72–114.50 E, 22.08–22.67 N), zoom 9–18. Mouse, touch and keyboard rotation are disabled; pitch stays at zero while pinch zoom remains available.
+
+## Growth animation and chronology
+
+`dist/growth.js` builds directed connected paths without reversing already normalised interchange ways. Opposite-direction mainlines pair naturally; short ramp connections are grouped into batches of at most four. Completed groups are static, and only the current batch updates at about 20 fps. Ramp colour gradients keep their original endpoints while geometry is partially revealed. Hidden-tab playback pauses; reduced-motion users receive completed static geometry. Scene changes cancel pending timers and animation frames.
+
+`dist/data/history.json` describes the dated chapters and credits. `scripts/prepare-growth-history.py` preserves the OSM way ID, direction and available `start_date` on the existing snapshot. 2,078 of 3,825 features have usable dated metadata; remaining features are explicitly undated or under construction and appear in the final current-network chapter. Opening milestones are contextualised using [Transport Department bridge/tunnel dates](https://www.td.gov.hk/tc/transport_in_hong_kong/tunnels_and_bridges_n/location_map/index.html) and [Highways Department Tuen Mun Road history](https://www.hyd.gov.hk/tc/information_corner/trivia/first_expressway/index.html). Current road geometry must not be interpreted as the precise historical carriageway extent.
